@@ -491,9 +491,9 @@ h4 { color:var(--h4-color); font-size:.64rem; margin:.75rem 0 .18rem; text-trans
 </button>
 <div class="topbar-divider"></div>
 <nav class="topbar-nav" id="topbarNav">
-<button class="nav-btn" data-mod="fundamentals" onclick="showMod('fundamentals',this)"><span data-en="">I — Fundamentals</span><span data-it="">I — Fondamenti</span></button>
-<button class="nav-btn" data-mod="intermediate" onclick="showMod('intermediate',this)"><span data-en="">II — Intermediate</span><span data-it="">II — Intermedio</span></button>
-<button class="nav-btn" data-mod="advanced" onclick="showMod('advanced',this)"><span data-en="">III — Advanced</span><span data-it="">III — Avanzato</span></button>
+<button class="nav-btn" data-mod="fundamentals" onclick="showMod('fundamentals',this)"><span data-en="">I. Basics</span><span data-it="">I. Basi</span></button>
+<button class="nav-btn" data-mod="intermediate" onclick="showMod('intermediate',this)"><span data-en="">II. Object-Oriented</span><span data-it="">II. Orientato agli oggetti</span></button>
+<button class="nav-btn" data-mod="advanced" onclick="showMod('advanced',this)"><span data-en="">III. Modern C#</span><span data-it="">III. C# Moderno</span></button>
 </nav>
 <div class="search-wrap" id="searchWrap">
 <input autocomplete="off" class="search-input" id="searchInput" onfocus="openResults()" oninput="onSearch()" placeholder="Search&#x2026;" type="text"/>
@@ -517,8 +517,8 @@ h4 { color:var(--h4-color); font-size:.64rem; margin:.75rem 0 .18rem; text-trans
     <div class="home-stat"><span class="home-stat-num">2</span><div class="home-stat-label"><span data-en="">Languages</span><span data-it="">Lingue</span></div></div>
   </div>
   <button class="home-start-btn" onclick="showMod('fundamentals', document.querySelector('[data-mod=fundamentals]'))">
-    <span data-en="">Start with Fundamentals &rarr;</span>
-    <span data-it="">Inizia dai Fondamenti &rarr;</span>
+    <span data-en="">Start with Basics &rarr;</span>
+    <span data-it="">Inizia da Basics &rarr;</span>
   </button>
 </div>
 
@@ -526,11 +526,11 @@ h4 { color:var(--h4-color); font-size:.64rem; margin:.75rem 0 .18rem; text-trans
   <!-- MODULE I -->
   <div class="home-module">
     <div class="home-module-header">
-      <div class="home-module-label"><span data-en="">Module I</span><span data-it="">Modulo I</span></div>
+      <div class="home-module-label"><span data-en="">I. Basics</span><span data-it="">I. Basi</span></div>
       <span class="home-module-count">14</span>
     </div>
-    <div class="home-module-title"><span data-en="">Fundamentals</span><span data-it="">Fondamenti</span></div>
-    <div class="home-module-sub"><span data-en="">Core language syntax, types, control flow, methods, and basic data structures.</span><span data-it="">Sintassi base, tipi, flusso di controllo, metodi e strutture dati basilari.</span></div>
+    <div class="home-module-title"><span data-en="">Basics</span><span data-it="">Basi</span></div>
+    <div class="home-module-sub"><span data-en="">Types, control flow, loops, arrays, methods, and core data structures.</span><span data-it="">Tipi, flusso di controllo, cicli, array, metodi e strutture dati fondamentali.</span></div>
     <ul class="home-module-topics">
       <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',0)"><span class="t-num">01</span><span data-en="">Data Types</span><span data-it="">Tipi di Dato</span></li>
       <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',1)"><span class="t-num">02</span><span data-en="">Input / Output</span><span data-it="">Input / Output</span></li>
@@ -553,11 +553,11 @@ h4 { color:var(--h4-color); font-size:.64rem; margin:.75rem 0 .18rem; text-trans
   <!-- MODULE II -->
   <div class="home-module">
     <div class="home-module-header">
-      <div class="home-module-label"><span data-en="">Module II</span><span data-it="">Modulo II</span></div>
+      <div class="home-module-label"><span data-en="">II. Object-Oriented</span><span data-it="">II. Orientato agli oggetti</span></div>
       <span class="home-module-count">17</span>
     </div>
-    <div class="home-module-title"><span data-en="">Intermediate</span><span data-it="">Intermedio</span></div>
-    <div class="home-module-sub"><span data-en="">OOP concepts, file I/O, serialization, collections, and type checking.</span><span data-it="">OOP, file I/O, serializzazione, collezioni e type checking.</span></div>
+    <div class="home-module-title"><span data-en="">Object-Oriented</span><span data-it="">Orientato agli oggetti</span></div>
+    <div class="home-module-sub"><span data-en="">Classes, inheritance, polymorphism, exceptions, file I/O, and collections.</span><span data-it="">Classi, ereditarietà, polimorfismo, eccezioni, file I/O e collezioni.</span></div>
     <ul class="home-module-topics">
       <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',0)"><span class="t-num">01</span><span data-en="">Classes &amp; Objects</span><span data-it="">Classi &amp; Oggetti</span></li>
       <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',1)"><span class="t-num">02</span><span data-en="">Constructors</span><span data-it="">Costruttori</span></li>
@@ -583,11 +583,11 @@ h4 { color:var(--h4-color); font-size:.64rem; margin:.75rem 0 .18rem; text-trans
   <!-- MODULE III -->
   <div class="home-module">
     <div class="home-module-header">
-      <div class="home-module-label"><span data-en="">Module III</span><span data-it="">Modulo III</span></div>
+      <div class="home-module-label"><span data-en="">III. Modern C#</span><span data-it="">III. C# Moderno</span></div>
       <span class="home-module-count">16</span>
     </div>
-    <div class="home-module-title"><span data-en="">Advanced</span><span data-it="">Avanzato</span></div>
-    <div class="home-module-sub"><span data-en="">LINQ, async/await, generics, pattern matching, threading, and modern C# features.</span><span data-it="">LINQ, async/await, generics, pattern matching, threading e funzionalit&agrave; moderne.</span></div>
+    <div class="home-module-title"><span data-en="">Modern C#</span><span data-it="">C# Moderno</span></div>
+    <div class="home-module-sub"><span data-en="">LINQ, async/await, generics, pattern matching, and the best of modern C#.</span><span data-it="">LINQ, async/await, generics, pattern matching, threading e funzionalit&agrave; moderne.</span></div>
     <ul class="home-module-topics">
       <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',0)"><span class="t-num">01</span>LINQ</li>
       <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',1)"><span class="t-num">02</span>Generics &lt;T&gt;</li>
@@ -617,7 +617,7 @@ h4 { color:var(--h4-color); font-size:.64rem; margin:.75rem 0 .18rem; text-trans
 <!-- SECTION FONDAMENTI (15) -->
 <div class="section" id="section-fundamentals">
 <div class="section-inner">
-<div class="section-title"><span data-en="">I — Fundamentals</span><span data-it="">I — Fondamenti</span></div>
+<div class="section-title"><span data-en="">I. Basics</span><span data-it="">I. Basi</span></div>
 <!-- 1. Tipi di Dato -->
 <div class="topic-card">
 <div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Data Types</span><span data-it="">Tipi di Dato</span></h3><div class="topic-sub"><span data-en="">int, long, double, decimal, string, char, bool, var, const, casting</span><span data-it="">int, long, double, decimal, string, char, bool, var, const, casting</span></div></div><span class="arrow">▼</span></div>
@@ -3955,7 +3955,7 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"Creati: {ContaOgge
 <!-- SECTION INTERMEDIO (17) -->
 <div class="section" id="section-intermediate">
 <div class="section-inner">
-<div class="section-title"><span data-en="">II — Intermediate</span><span data-it="">II — Intermedio</span></div>
+<div class="section-title"><span data-en="">II. Object-Oriented</span><span data-it="">II. Orientato agli oggetti</span></div>
 <!-- 1. Classi & Oggetti -->
 <div class="topic-card">
 <div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Classes &amp; Objects</span><span data-it="">Classi &amp; Oggetti</span></h3><div class="topic-sub"><span data-en="">Blueprint, instance, new, this, public fields</span><span data-it="">Blueprint, istanza, new, this, campi pubblici</span></div></div><span class="arrow">▼</span></div>
@@ -11124,7 +11124,7 @@ gv.<span class="fn">EliminaVersioniVecchie</span>(<span class="str">"documento.t
 <!-- SECTION AVANZATO (23) -->
 <div class="section" id="section-advanced">
 <div class="section-inner">
-<div class="section-title"><span data-en="">III — Advanced</span><span data-it="">III — Avanzato</span></div>
+<div class="section-title"><span data-en="">III. Modern C#</span><span data-it="">III. C# Moderno</span></div>
 <!-- 1. LINQ -->
 <div class="topic-card">
 <div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">LINQ</span><span data-it="">LINQ</span></h3><div class="topic-sub"><span data-en="">Where, Select, OrderBy, GroupBy, First, Count, Sum, Any, All</span><span data-it="">Where, Select, OrderBy, GroupBy, First, Count, Sum, Any, All</span></div></div><span class="arrow">▼</span></div>
@@ -12252,8 +12252,8 @@ function initStickyHeaders() {
 
 // ── Search ─────────────────────────────────────────────────────────────
 const MODULE_LABELS = {
-  en: { fundamentals:'I \u2014 Fundamentals', intermediate:'II \u2014 Intermediate', advanced:'III \u2014 Advanced' },
-  it: { fundamentals:'I \u2014 Fondamenti',   intermediate:'II \u2014 Intermedio',   advanced:'III \u2014 Avanzato'  }
+  en: { fundamentals:'I. Basics', intermediate:'II. Object-Oriented', advanced:'III. Modern C#' },
+  it: { fundamentals:'I. Basi', intermediate:'II. Orientato agli oggetti', advanced:'III. C# Moderno' }
 };
 let _index = null;
 function getIndex() {
