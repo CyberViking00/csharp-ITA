@@ -8,349 +8,621 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --bg: #0d0d0d;
-  --surface: #141414;
-  --card: #1a1a1a;
-  --border: #2a2a2a;
-  --border-hover: #3a3a3a;
-  --text: #e0e0e0;
-  --muted: #666;
-  --muted2: #444;
-  --code-bg: #111;
-  --accent: #fff;
+  /* layout */
+  --topbar-h: 46px;
+  --ease:     cubic-bezier(.4,0,.2,1);
+
+  /* dark palette (default) */
+  --bg:           #080808;
+  --surface:      #0e0e0e;
+  --card:         #131313;
+  --card-hover:   #161616;
+  --border:       #1e1e1e;
+  --border-h:     #2a2a2a;
+  --text:         #d4d4d4;
+  --text-strong:  #ffffff;
+  --muted:        #4a4a4a;
+  --muted2:       #2e2e2e;
+  --code-bg:      #0a0a0a;
+  --code-text:    #c9d1d9;
+  --shadow-card:  rgba(0,0,0,.5);
+  --shadow-hero:  rgba(0,0,0,.5);
+
+  /* ui micro-colors */
+  --progress-bg:   #333;
+  --sr-hover:      #181818;
+  --sr-border-h:   #2a2a2a;
+  --sr-highlight:  #222;
+  --header-hover:  #181818;
+  --header-open:   #171717;
+  --topic-open-b:  #282828;
+  --sticky-bg:     rgba(8,8,8,.96);
+  --copy-hover:    #bbb;
+  --th-bg:         #0a0a0a;
+  --td-color:      #777;
+  --tr-hover:      #151515;
+  --p-color:       #666;
+  --h4-color:      #333;
+  --pending-b:     #181818;
+  --pending-text:  #252525;
+  --hint-color:    #1e1e1e;
+  --section-title: #aaa;
+  --home-title:    #ffffff;
+  --star-color:    #666;
+
+  /* callout colors */
+  --info-bg: #0c1520; --info-bd: #1a3555; --info-tx: #5a8aaa;
+  --note-bg: #111;    --note-bd: #222;    --note-tx: #555;
+  --warn-bg: #120e00; --warn-bd: #332200; --warn-tx: #7a6015;
+  --tip-bg:  #091309; --tip-bd:  #163016; --tip-tx:  #3d6640;
+
+  /* syntax highlighting */
+  --syn-kw:  #ff79c6;
+  --syn-ty:  #8be9fd;
+  --syn-str: #f1fa8c;
+  --syn-cm:  #3a3a3a;
+  --syn-num: #bd93f9;
+  --syn-fn:  #50fa7b;
+  --syn-op:  #ff79c6;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+
+[data-theme="light"] {
+  --bg:           #f8f8f8;
+  --surface:      #f0f0f0;
+  --card:         #ffffff;
+  --card-hover:   #fafafa;
+  --border:       #e4e4e4;
+  --border-h:     #d0d0d0;
+  --text:         #1a1a1a;
+  --text-strong:  #000000;
+  --muted:        #999;
+  --muted2:       #ccc;
+  --code-bg:      #f4f4f4;
+  --code-text:    #383a42;
+  --shadow-card:  rgba(0,0,0,.08);
+  --shadow-hero:  rgba(0,0,0,.12);
+
+  --progress-bg:   #ccc;
+  --sr-hover:      #f5f5f5;
+  --sr-border-h:   #d0d0d0;
+  --sr-highlight:  #e8e8e8;
+  --header-hover:  #f7f7f7;
+  --header-open:   #f5f5f5;
+  --topic-open-b:  #d8d8d8;
+  --sticky-bg:     rgba(248,248,248,.96);
+  --copy-hover:    #333;
+  --th-bg:         #f0f0f0;
+  --td-color:      #666;
+  --tr-hover:      #fafafa;
+  --p-color:       #555;
+  --h4-color:      #aaa;
+  --pending-b:     #e0e0e0;
+  --pending-text:  #bbb;
+  --hint-color:    #ddd;
+  --section-title: #666;
+  --home-title:    #111;
+  --star-color:    #ccc;
+
+  --info-bg: #eef4fb; --info-bd: #93b8d8; --info-tx: #2c6ea0;
+  --note-bg: #f5f5f5; --note-bd: #ccc;    --note-tx: #888;
+  --warn-bg: #fdf8e8; --warn-bd: #d4a800; --warn-tx: #7a6015;
+  --tip-bg:  #eef8ef; --tip-bd:  #5aac62; --tip-tx:  #2e7835;
+
+  --syn-kw:  #d73a8c;
+  --syn-ty:  #0077aa;
+  --syn-str: #7c8000;
+  --syn-cm:  #aaa;
+  --syn-num: #7c35b8;
+  --syn-fn:  #008000;
+  --syn-op:  #d73a8c;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+/* ══ TOPBAR ══ */
 .topbar {
-  display:flex; align-items:center; gap:1rem;
-  padding:0 1.5rem; height:48px;
+  display:flex; align-items:center; gap:.6rem;
+  padding:0 1.25rem; height:var(--topbar-h);
   background:var(--surface); border-bottom:1px solid var(--border);
-  position:sticky; top:0; z-index:100;
+  position:sticky; top:0; z-index:200;
 }
 .topbar-brand {
-  font-size:.85rem; font-weight:700; color:var(--text);
-  white-space:nowrap; letter-spacing:-.3px; flex-shrink:0;
+  font-size:.82rem; font-weight:700; color:var(--text);
+  white-space:nowrap; letter-spacing:-.2px; flex-shrink:0;
+  cursor:pointer; transition:opacity .15s;
 }
+.topbar-brand:hover { opacity:.7; }
 .topbar-brand span { color:var(--muted); font-weight:400; }
-.topbar-nav {
-  display:flex; gap:.25rem; flex-shrink:0;
-}
+.topbar-divider { width:1px; height:16px; background:var(--border); flex-shrink:0; }
+.topbar-nav { display:flex; gap:.15rem; flex-shrink:0; }
 .nav-btn {
-  padding:.3rem .75rem; border:1px solid transparent;
+  padding:.26rem .65rem; border:1px solid transparent;
   background:transparent; color:var(--muted);
-  border-radius:6px; font-family:'Inter',sans-serif;
-  font-size:.75rem; font-weight:500; cursor:pointer;
-  white-space:nowrap; transition:all .15s;
+  border-radius:4px; font-family:'Inter',sans-serif;
+  font-size:.71rem; font-weight:500; cursor:pointer;
+  white-space:nowrap; transition:all .15s var(--ease);
 }
-.nav-btn:hover { color:var(--text); background:var(--card); }
-.nav-btn.active {
-  background:var(--card); color:var(--text);
-  border-color:var(--border); font-weight:600;
-}
-.topbar-divider { width:1px; height:20px; background:var(--border); flex-shrink:0; }
-/* ══ Language Toggle ══ */
-.lang-toggle { display:flex; align-items:center; border:1px solid var(--border); border-radius:6px; overflow:hidden; flex-shrink:0; }
-.lang-btn { padding:.28rem .65rem; background:transparent; border:none; color:var(--muted); cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:700; transition:all .15s; letter-spacing:.5px; }
+.nav-btn:hover  { color:var(--text); background:var(--card); }
+.nav-btn.active { background:var(--card); color:var(--text); border-color:var(--border); font-weight:600; }
+
+/* sidebar toggle */
+
+/* lang toggle */
+.lang-toggle { display:flex; align-items:center; border:1px solid var(--border); border-radius:4px; overflow:hidden; flex-shrink:0; }
+.lang-btn { padding:.24rem .56rem; background:transparent; border:none; color:var(--muted); cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:.66rem; font-weight:700; transition:all .15s; letter-spacing:.4px; }
 .lang-btn:first-child { border-right:1px solid var(--border); }
-.lang-btn:hover { color:var(--text); background:var(--card); }
+.lang-btn:hover  { color:var(--text); background:var(--card); }
 .lang-btn.active { background:var(--card); color:var(--text); }
-/* ══ Language visibility ══ */
+
+/* lang visibility */
 body.lang-it [data-en] { display:none !important; }
 body.lang-en [data-it] { display:none !important; }
 .en-placeholder { display:none; }
-.it-content { display:none; }
+.it-content     { display:none; }
 .topic-card.open .en-placeholder { display:block; }
-.topic-card.open .it-content { display:block; }
-body.lang-en .topic-card.open .it-content { display:none; }
+.topic-card.open .it-content     { display:block; }
+body.lang-en .topic-card.open .it-content     { display:none; }
 body.lang-it .topic-card.open .en-placeholder { display:none; }
 
+/* progress bar */
+.progress-bar  { position:fixed; top:var(--topbar-h); left:0; right:0; height:1px; background:transparent; z-index:199; pointer-events:none; }
+.progress-fill { height:100%; background:var(--progress-bg); width:0%; transition:width .08s linear; }
+
+/* ══ SEARCH ══ */
 .search-wrap { position:relative; margin-left:auto; flex-shrink:0; }
 .search-input {
   background:var(--card); border:1px solid var(--border);
   color:var(--text); font-family:'JetBrains Mono',monospace;
-  font-size:.75rem; padding:.3rem 1.8rem .3rem .75rem;
-  border-radius:6px; width:180px; outline:none; transition:all .2s;
+  font-size:.71rem; padding:.26rem 1.7rem .26rem .65rem;
+  border-radius:4px; width:160px; outline:none; transition:all .2s var(--ease);
 }
-.search-input:focus { border-color:var(--border-hover); width:240px; }
+.search-input:focus  { border-color:var(--border-h); width:220px; }
 .search-input::placeholder { color:var(--muted2); }
 .search-hint {
-  position:absolute; right:2rem; top:50%; transform:translateY(-50%);
-  font-size:.65rem; color:var(--muted2); pointer-events:none;
-  font-family:'JetBrains Mono',monospace;
+  position:absolute; right:1.9rem; top:50%; transform:translateY(-50%);
+  font-size:.58rem; color:var(--muted2); pointer-events:none; font-family:'JetBrains Mono',monospace;
 }
 .search-clear {
-  position:absolute; right:.5rem; top:50%; transform:translateY(-50%);
-  color:var(--muted); font-size:.9rem; cursor:pointer;
-  display:none; background:none; border:none; line-height:1;
+  position:absolute; right:.45rem; top:50%; transform:translateY(-50%);
+  color:var(--muted); font-size:.8rem; cursor:pointer; display:none;
+  background:none; border:none; line-height:1;
 }
 .search-results {
-  position:absolute; top:calc(100% + 6px); right:0;
+  position:absolute; top:calc(100% + 5px); right:0;
   background:var(--card); border:1px solid var(--border);
-  border-radius:8px; width:340px; max-height:420px;
-  overflow-y:auto; z-index:999;
-  box-shadow:0 8px 24px rgba(0,0,0,.6); display:none;
+  border-radius:6px; width:330px; max-height:400px;
+  overflow-y:auto; z-index:999; box-shadow:0 16px 48px rgba(0,0,0,.8); display:none;
 }
-.search-results.open { display:block; }
-.sr-item {
-  padding:.6rem .9rem; border-bottom:1px solid var(--border);
-  cursor:pointer; transition:background .1s;
-}
+.search-results.open { display:block; animation:fadeUp .12s var(--ease); }
+.sr-item { padding:.55rem .85rem; border-bottom:1px solid var(--border); cursor:pointer; transition:background .1s; border-left:2px solid transparent; }
 .sr-item:last-child { border-bottom:none; }
-.sr-item:hover { background:#1f1f1f; }
-.sr-mod { font-size:.62rem; color:var(--muted); font-family:'JetBrains Mono',monospace; margin-bottom:.15rem; }
-.sr-title { font-size:.82rem; font-weight:600; color:var(--text); }
-.sr-sub { font-size:.7rem; color:var(--muted); margin-top:.1rem; }
-.sr-highlight { color:#fff; background:#2a2a2a; border-radius:2px; padding:0 2px; }
-.sr-empty { padding:1rem; text-align:center; color:var(--muted); font-size:.82rem; }
+.sr-item:hover { background:var(--sr-hover); border-left-color:var(--sr-border-h); }
+.sr-mod   { font-size:.58rem; color:var(--muted); font-family:'JetBrains Mono',monospace; margin-bottom:.12rem; text-transform:uppercase; letter-spacing:.5px; }
+.sr-title { font-size:.78rem; font-weight:600; color:var(--text); }
+.sr-sub   { font-size:.67rem; color:var(--muted); margin-top:.08rem; }
+.sr-highlight { color:var(--text-strong); background:var(--sr-highlight); border-radius:2px; padding:0 2px; }
+.sr-empty { padding:.9rem; text-align:center; color:var(--muted); font-size:.78rem; }
 
-.layout { display:flex; height:calc(100vh - 48px); overflow:hidden; }
-.sidebar {
-  width:260px; flex-shrink:0;
-  background:var(--surface); border-right:1px solid var(--border);
-  overflow-y:auto; padding:.75rem 0;
-}
-.sidebar::-webkit-scrollbar { width:4px; }
-.sidebar::-webkit-scrollbar-track { background:transparent; }
-.sidebar::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+/* ══ LAYOUT ══ */
+.layout { /* sizing handled by .view-host */ }
 
-.tree-group { margin-bottom:.125rem; }
-.tree-mod {
-  display:flex; align-items:center; gap:.5rem;
-  padding:.45rem 1rem; cursor:pointer;
-  font-size:.78rem; font-weight:600; color:var(--text);
-  user-select:none; transition:background .1s;
-}
-.tree-mod:hover { background:var(--card); }
-.tree-mod.open { color:#fff; }
-.tree-arrow {
-  font-size:.6rem; color:var(--muted); transition:transform .2s; flex-shrink:0;
-}
-.tree-mod.open .tree-arrow { transform:rotate(90deg); color:var(--text); }
-.tree-mod-label { flex:1; min-width:0; }
-.tree-count {
-  font-size:.65rem; font-family:'JetBrains Mono',monospace;
-  color:var(--muted); background:var(--card);
-  border:1px solid var(--border); border-radius:3px;
-  padding:.05rem .3rem; flex-shrink:0;
-}
-.tree-children { display:none; padding:.125rem 0; }
-.tree-mod.open + .tree-children { display:block; }
-.tree-item {
-  display:flex; align-items:flex-start; gap:.5rem;
-  padding:.35rem 1rem .35rem 2rem; cursor:pointer;
-  transition:background .1s; border-left:2px solid transparent;
-}
-.tree-item:hover { background:var(--card); }
-.tree-item.active {
-  background:var(--card); border-left-color:var(--text);
-}
-.tree-num {
-  font-size:.62rem; font-family:'JetBrains Mono',monospace;
-  color:var(--muted2); flex-shrink:0; margin-top:.1rem; width:20px;
-}
-.tree-item-text { flex:1; min-width:0; }
-.tree-title { font-size:.75rem; font-weight:500; color:var(--text); display:block; }
-.tree-sub { font-size:.66rem; color:var(--muted); display:block; margin-top:.05rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-.content {
-  flex:1; overflow-y:auto; padding:1.5rem 2rem;
-}
-.content::-webkit-scrollbar { width:4px; }
-.content::-webkit-scrollbar-track { background:transparent; }
+/* ══ CONTENT ══ */
+.content { width:100%; }
+.content::-webkit-scrollbar { width:2px; }
 .content::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
 
-.section { display:none; animation:fadeIn .2s ease; }
+/* ══ HOMEPAGE ══ */
+#section-home {
+  padding:4rem 3rem 3rem;
+  /* display managed by .view system */
+}
+
+.home-hero {
+  max-width:720px; margin:0 auto 4rem;
+  text-align:center;
+}
+.home-eyebrow {
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem; color:var(--muted); letter-spacing:.12em;
+  text-transform:uppercase; margin-bottom:1.25rem;
+  display:flex; align-items:center; justify-content:center; gap:.75rem;
+}
+.home-eyebrow::before, .home-eyebrow::after {
+  content:''; display:block; height:1px; width:40px; background:var(--border);
+}
+.home-title {
+  font-size:clamp(2.4rem,5vw,3.8rem); font-weight:700;
+  line-height:1.08; letter-spacing:-.03em; color:var(--home-title);
+  margin-bottom:1rem;
+}
+.home-title-accent { color:var(--muted); }
+.home-sub {
+  font-size:.9rem; color:var(--muted); line-height:1.7; max-width:480px; margin:0 auto 2.25rem;
+}
+.home-stats {
+  display:flex; justify-content:center; gap:2.5rem; margin-bottom:2.5rem;
+}
+.home-stat { text-align:center; }
+.home-stat-num {
+  font-family:'JetBrains Mono',monospace; font-size:1.6rem;
+  font-weight:700; color:var(--text); display:block; line-height:1;
+}
+.home-stat-label { font-size:.66rem; color:var(--muted); margin-top:.3rem; text-transform:uppercase; letter-spacing:.06em; }
+.home-start-btn {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:var(--text); color:var(--bg);
+  font-family:'Inter',sans-serif; font-size:.78rem; font-weight:600;
+  padding:.65rem 1.5rem; border-radius:5px; border:none;
+  cursor:pointer; transition:all .2s var(--ease); letter-spacing:.01em;
+}
+.home-start-btn:hover { background:var(--text-strong); transform:translateY(-1px); box-shadow:0 8px 24px var(--shadow-hero); }
+
+/* homepage module grid */
+.home-modules {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+  max-width:1000px; margin:0 auto;
+  border:1px solid var(--border); border-radius:8px; overflow:hidden;
+}
+.home-module {
+  background:var(--card); padding:1.6rem 1.4rem 1.4rem;
+  transition:background .15s;
+}
+.home-module:hover { background:var(--card-hover); }
+.home-module-header {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  margin-bottom:1rem;
+}
+.home-module-label {
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  color:var(--muted); text-transform:uppercase; letter-spacing:.08em;
+}
+.home-module-count {
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  color:var(--muted2); border:1px solid var(--border);
+  border-radius:3px; padding:.04rem .3rem;
+}
+.home-module-title {
+  font-size:.95rem; font-weight:700; color:var(--text); margin-bottom:.25rem;
+}
+.home-module-sub { font-size:.72rem; color:var(--muted); line-height:1.5; margin-bottom:1.1rem; }
+.home-module-topics { list-style:none; }
+.home-module-topics li {
+  font-size:.68rem; color:var(--muted); padding:.18rem 0;
+  border-bottom:1px solid var(--border); display:flex; align-items:baseline; gap:.5rem;
+  cursor:pointer; transition:color .1s;
+}
+.home-module-topics li:last-child { border-bottom:none; }
+.home-module-topics li:hover { color:var(--text); }
+.home-module-topics li .t-num { font-family:'JetBrains Mono',monospace; font-size:.55rem; color:var(--muted2); flex-shrink:0; }
+.home-module-enter {
+  display:block; width:100%; margin-top:1rem; padding:.45rem .75rem;
+  background:transparent; border:1px solid var(--border);
+  color:var(--muted); font-family:'Inter',sans-serif;
+  font-size:.69rem; font-weight:500; border-radius:4px;
+  cursor:pointer; transition:all .15s; text-align:center;
+}
+.home-module-enter:hover { background:var(--card); color:var(--text); border-color:var(--border-h); }
+
+/* ══ REFERENCE SECTIONS ══ */
+.section { display:none; }
 .section.active { display:block; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.section-inner { max-width:820px; margin:0 auto; padding:1.75rem 2.5rem; }
 
 .section-title {
-  font-size:1.1rem; font-weight:700; margin-bottom:1.25rem;
-  display:flex; align-items:center; gap:.6rem; color:#fff;
+  font-size:.88rem; font-weight:700; margin-bottom:1.2rem;
+  display:flex; align-items:center; gap:.55rem; color:var(--section-title);
+  padding-bottom:.65rem; border-bottom:1px solid var(--border);
+  letter-spacing:.01em;
 }
 .tag {
-  font-size:.6rem; padding:.15rem .45rem; border-radius:4px;
+  font-size:.56rem; padding:.11rem .38rem; border-radius:3px;
   font-family:'JetBrains Mono',monospace;
   background:var(--card); color:var(--muted); border:1px solid var(--border);
 }
 
+/* topic cards */
 .topic-card {
   background:var(--card); border:1px solid var(--border);
-  border-radius:8px; margin-bottom:.6rem; overflow:hidden;
-  transition:border-color .15s;
+  border-radius:6px; margin-bottom:.4rem; overflow:hidden;
+  transition:border-color .15s var(--ease), box-shadow .15s var(--ease);
 }
-.topic-card:hover { border-color:var(--border-hover); }
+.topic-card:hover { border-color:var(--border-h); }
+.topic-card.open  { border-color:var(--topic-open-b); box-shadow:0 4px 20px var(--shadow-card); }
 .topic-header {
-  padding:.75rem 1rem; cursor:pointer;
+  padding:.65rem .9rem; cursor:pointer;
   display:flex; justify-content:space-between; align-items:center;
-  user-select:none; gap:.5rem;
+  user-select:none; gap:.4rem; transition:background .1s;
 }
-.topic-header div { flex:1; min-width:0; }
-.topic-header h3 { font-size:.85rem; font-weight:600; }
-.topic-sub { font-size:.68rem; color:var(--muted); margin-top:.1rem; }
-.arrow { color:var(--muted2); transition:transform .25s; font-size:.75rem; flex-shrink:0; }
+.topic-header:hover     { background:var(--header-hover); }
+.topic-card.open .topic-header { background:var(--header-open); }
+.topic-header-inner { flex:1; min-width:0; }
+.topic-header h3  { font-size:.8rem; font-weight:600; color:var(--text); }
+.topic-sub        { font-size:.63rem; color:var(--muted); margin-top:.06rem; }
+.arrow { color:var(--muted2); transition:transform .22s var(--ease); font-size:.65rem; }
 .topic-card.open .arrow { transform:rotate(180deg); }
-.topic-body {
-  display:none; padding:.125rem 1rem 1rem;
-  border-top:1px solid var(--border);
-}
+.topic-body { display:none; padding:.4rem .9rem 1.1rem; border-top:1px solid var(--border); }
 .topic-card.open .topic-body { display:block; }
 
+/* sticky header */
+.topic-sticky {
+  display:none; position:sticky;
+  top:calc(var(--topbar-h)); z-index:100;
+  background:var(--sticky-bg); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:.38rem .9rem; font-size:.72rem; font-weight:600;
+  color:var(--p-color); letter-spacing:.01em;
+}
+.topic-card.open .topic-sticky { display:block; }
+
+/* prev/next nav */
+
+/* copy btn */
+.pre-wrap  { position:relative; }
+.copy-btn  {
+  position:absolute; top:.4rem; right:.4rem;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--muted); font-family:'JetBrains Mono',monospace;
+  font-size:.56rem; padding:.16rem .44rem; border-radius:3px;
+  cursor:pointer; opacity:0; transition:opacity .15s, color .12s, border-color .12s;
+  line-height:1.5; user-select:none; letter-spacing:.02em;
+}
+.pre-wrap:hover .copy-btn { opacity:1; }
+.copy-btn:hover  { color:var(--copy-hover); border-color:var(--border-h); }
+.copy-btn.copied { color:#4ade80; border-color:#4ade80; opacity:1; }
+
+/* code */
 pre {
   background:var(--code-bg); border:1px solid var(--border);
-  border-radius:6px; padding:.85rem 1rem; margin:.65rem 0;
+  border-radius:5px; padding:.8rem .9rem; margin:.55rem 0;
   overflow-x:auto; font-family:'JetBrains Mono',monospace;
-  font-size:.75rem; line-height:1.65; color:#c9d1d9;
+  font-size:.71rem; line-height:1.68; color:var(--code-text);
 }
-.kw{color:#ff79c6} .ty{color:#8be9fd} .str{color:#f1fa8c}
-.cm{color:#555;font-style:italic} .num{color:#bd93f9}
-.fn{color:#50fa7b} .op{color:#ff79c6}
+.kw{color:var(--syn-kw)} .ty{color:var(--syn-ty)} .str{color:var(--syn-str)}
+.cm{color:var(--syn-cm);font-style:italic} .num{color:var(--syn-num)}
+.fn{color:var(--syn-fn)} .op{color:var(--syn-op)}
 
+/* callouts */
 .info,.note,.warn,.tip {
-  border-radius:0 6px 6px 0; margin:.65rem 0;
-  font-size:.8rem; padding:.55rem .9rem; line-height:1.55;
+  border-radius:0 4px 4px 0; margin:.55rem 0;
+  font-size:.76rem; padding:.46rem .8rem; line-height:1.6;
 }
-.info { background:#111a22; border-left:2px solid #336; color:#8aa; }
-.note { background:#1a1a1a; border-left:2px solid #333; color:#888; }
-.warn { background:#1a1700; border-left:2px solid #554400; color:#aa8833; }
-.tip  { background:#0d1a10; border-left:2px solid #224422; color:#668866; }
+.info { background:var(--info-bg); border-left:2px solid var(--info-bd); color:var(--info-tx); }
+.note { background:var(--note-bg); border-left:2px solid var(--note-bd); color:var(--note-tx); }
+.warn { background:var(--warn-bg); border-left:2px solid var(--warn-bd); color:var(--warn-tx); }
+.tip  { background:var(--tip-bg); border-left:2px solid var(--tip-bd); color:var(--tip-tx); }
 
-table { width:100%; border-collapse:collapse; margin:.65rem 0; font-size:.78rem; }
-th { background:#111; color:var(--muted); padding:.45rem .7rem; text-align:left; font-size:.67rem; text-transform:uppercase; letter-spacing:.8px; }
-td { padding:.45rem .7rem; border-top:1px solid var(--border); color:#999; font-family:'JetBrains Mono',monospace; font-size:.74rem; }
-tr:hover td { background:#1f1f1f; }
+/* tables */
+table { width:100%; border-collapse:collapse; margin:.55rem 0; font-size:.74rem; }
+th { background:var(--th-bg); color:var(--muted); padding:.38rem .6rem; text-align:left; font-size:.62rem; text-transform:uppercase; letter-spacing:.8px; border-bottom:1px solid var(--border); }
+td { padding:.38rem .6rem; border-top:1px solid var(--border); color:var(--td-color); font-family:'JetBrains Mono',monospace; font-size:.7rem; }
+tr:hover td { background:var(--tr-hover); }
 
-p { line-height:1.7; color:#888; margin:.4rem 0; font-size:.83rem; }
-h4 { color:var(--muted); font-size:.7rem; margin:.85rem 0 .25rem; text-transform:uppercase; letter-spacing:.8px; }
+/* typography */
+p  { line-height:1.72; color:var(--p-color); margin:.3rem 0; font-size:.79rem; }
+h4 { color:var(--h4-color); font-size:.64rem; margin:.75rem 0 .18rem; text-transform:uppercase; letter-spacing:.9px; }
+
+/* pending placeholder */
+.pending-notice {
+  margin:1.75rem auto; padding:.6rem 1.25rem;
+  background:var(--bg); border:1px dashed var(--pending-b);
+  border-radius:4px; color:var(--pending-text); font-size:.72rem;
+  font-style:italic; text-align:center; display:inline-block;
+}
+
+/* kbd */
+.kbd {
+  display:inline-block; font-family:'JetBrains Mono',monospace;
+  font-size:.58rem; padding:.04rem .28rem;
+  border:1px solid var(--border); border-radius:3px;
+  background:var(--surface); color:var(--muted); vertical-align:middle;
+}
+
+/* shortcut hint */
 
 .mod-label { display:none; }
-::-webkit-scrollbar { width:4px; height:4px; }
-::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar { width:2px; height:2px; }
 ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ══ THEME TOGGLE ══ */
+.theme-toggle {
+  display:flex; align-items:center; justify-content:center;
+  width:28px; height:28px; border-radius:4px;
+  border:1px solid var(--border); background:transparent;
+  cursor:pointer; flex-shrink:0;
+  transition:all .15s var(--ease); padding:0;
+  color:var(--muted);
+}
+.theme-toggle:hover { background:var(--card); border-color:var(--border-h); }
+.theme-icon { font-size:.9rem; line-height:1; display:block; }
+
+/* flag sizing */
+.lang-btn { font-size:1rem; padding:.2rem .4rem; letter-spacing:0; }
+.lang-btn:first-child { border-right:1px solid var(--border); }
+
+
+
+
+/* ══ VIEW HOST ══ */
+.view-host {
+  position:relative;
+  height:calc(100vh - var(--topbar-h));
+  overflow:hidden;
+}
+.view {
+  position:absolute; inset:0;
+  overflow-y:auto;
+  opacity:0; pointer-events:none;
+  transform:translateY(10px);
+  transition:opacity .22s var(--ease), transform .22s var(--ease);
+  will-change:opacity,transform;
+}
+.view.active {
+  opacity:1; pointer-events:auto;
+  transform:translateY(0);
+}
+.view.exit {
+  opacity:0; transform:translateY(-8px);
+  pointer-events:none;
+  transition:opacity .15s var(--ease), transform .15s var(--ease);
+}
+.view::-webkit-scrollbar { width:2px; }
+.view::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
 </style>
 </head>
 <body class="lang-en"> <!-- CHANGEMEDEFAULTLANGUAGE -->
 <!-- TOPBAR -->
 <header class="topbar">
-<div class="topbar-brand">C# <span>Reference</span></div>
+<div class="topbar-brand" onclick="goHome()" title="Home">C# <span>Reference</span></div>
 <div class="topbar-divider"></div>
-<nav class="topbar-nav">
-<button class="nav-btn active" data-mod="fundamentals" onclick="showMod('fundamentals',this)"><span data-en="">I — Fundamentals</span><span data-it="">I — Fondamenti</span></button>
+<div class="lang-toggle">
+<button class="lang-btn active" id="btn-en" onclick="setLang('en')" title="English">&#x1F1EC;&#x1F1E7;</button>
+<button class="lang-btn" id="btn-it" onclick="setLang('it')" title="Italiano">&#x1F1EE;&#x1F1F9;</button>
+</div>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+<span class="theme-icon">🌙</span>
+</button>
+<div class="topbar-divider"></div>
+<nav class="topbar-nav" id="topbarNav">
+<button class="nav-btn" data-mod="fundamentals" onclick="showMod('fundamentals',this)"><span data-en="">I — Fundamentals</span><span data-it="">I — Fondamenti</span></button>
 <button class="nav-btn" data-mod="intermediate" onclick="showMod('intermediate',this)"><span data-en="">II — Intermediate</span><span data-it="">II — Intermedio</span></button>
 <button class="nav-btn" data-mod="advanced" onclick="showMod('advanced',this)"><span data-en="">III — Advanced</span><span data-it="">III — Avanzato</span></button>
 </nav>
-<div class="topbar-divider"></div>
-<div class="lang-toggle">
-<button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
-<button class="lang-btn" id="btn-it" onclick="setLang('it')">IT</button>
-</div>
 <div class="search-wrap" id="searchWrap">
-<input autocomplete="off" class="search-input" id="searchInput" onfocus="openResults()" oninput="onSearch()" placeholder="Search…" type="text"/>
-<button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
+<input autocomplete="off" class="search-input" id="searchInput" onfocus="openResults()" oninput="onSearch()" placeholder="Search&#x2026;" type="text"/>
+<span class="search-hint" id="searchHint"><span class="kbd">/</span></span>
+<button class="search-clear" id="searchClear" onclick="clearSearch()">&#215;</button>
 <div class="search-results" id="searchResults"></div>
 </div>
 </header>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<!-- HOME -->
+<div class="view-host">
+<div id="section-home" class="view active">
+<div class="home-hero">
+  <div class="home-eyebrow"><span data-en="">Complete Reference</span><span data-it="">Riferimento Completo</span></div>
+  <h1 class="home-title">C# <span class="home-title-accent">Reference</span></h1>
+  <p class="home-sub" data-en="">47 topics across three modules — from primitive types and control flow to async patterns, LINQ, and advanced generics. Open a topic, read the code, move on.</p>
+  <p class="home-sub" data-it="">47 argomenti in tre moduli — dai tipi primitivi e il flusso di controllo fino a pattern async, LINQ e generics avanzati.</p>
+  <div class="home-stats">
+    <div class="home-stat"><span class="home-stat-num">47</span><div class="home-stat-label"><span data-en="">Topics</span><span data-it="">Argomenti</span></div></div>
+    <div class="home-stat"><span class="home-stat-num">3</span><div class="home-stat-label"><span data-en="">Modules</span><span data-it="">Moduli</span></div></div>
+    <div class="home-stat"><span class="home-stat-num">2</span><div class="home-stat-label"><span data-en="">Languages</span><span data-it="">Lingue</span></div></div>
+  </div>
+  <button class="home-start-btn" onclick="showMod('fundamentals', document.querySelector('[data-mod=fundamentals]'))">
+    <span data-en="">Start with Fundamentals &rarr;</span>
+    <span data-it="">Inizia dai Fondamenti &rarr;</span>
+  </button>
+</div>
+
+<div class="home-modules">
+  <!-- MODULE I -->
+  <div class="home-module">
+    <div class="home-module-header">
+      <div class="home-module-label"><span data-en="">Module I</span><span data-it="">Modulo I</span></div>
+      <span class="home-module-count">14</span>
+    </div>
+    <div class="home-module-title"><span data-en="">Fundamentals</span><span data-it="">Fondamenti</span></div>
+    <div class="home-module-sub"><span data-en="">Core language syntax, types, control flow, methods, and basic data structures.</span><span data-it="">Sintassi base, tipi, flusso di controllo, metodi e strutture dati basilari.</span></div>
+    <ul class="home-module-topics">
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',0)"><span class="t-num">01</span><span data-en="">Data Types</span><span data-it="">Tipi di Dato</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',1)"><span class="t-num">02</span><span data-en="">Input / Output</span><span data-it="">Input / Output</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',2)"><span class="t-num">03</span><span data-en="">Arithmetic &amp; Math</span><span data-it="">Aritmetica &amp; Math</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',3)"><span class="t-num">04</span><span data-en="">Comparison &amp; Booleans</span><span data-it="">Confronto &amp; Booleani</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',4)"><span class="t-num">05</span><span data-en="">Control Structures</span><span data-it="">Strutture di Controllo</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',5)"><span class="t-num">06</span><span data-en="">Loops</span><span data-it="">Cicli</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',6)"><span class="t-num">07</span><span data-en="">Array &amp; foreach</span><span data-it="">Array &amp; foreach</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',7)"><span class="t-num">08</span>List&lt;T&gt;</li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',8)"><span class="t-num">09</span><span data-en="">String Methods</span><span data-it="">Metodi String</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',9)"><span class="t-num">10</span>Enum</li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',10)"><span class="t-num">11</span><span data-en="">Methods</span><span data-it="">Metodi</span></li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',11)"><span class="t-num">12</span>Struct</li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',12)"><span class="t-num">13</span>Nullable &amp; Null Operators</li>
+      <li onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'));showTopic('fundamentals',13)"><span class="t-num">14</span><span data-en="">Scope &amp; Visibility</span><span data-it="">Scope &amp; Visibilit&agrave;</span></li>
+    </ul>
+    <button class="home-module-enter" onclick="showMod('fundamentals',document.querySelector('[data-mod=fundamentals]'))"><span data-en="">Open module &rarr;</span><span data-it="">Apri modulo &rarr;</span></button>
+  </div>
+
+  <!-- MODULE II -->
+  <div class="home-module">
+    <div class="home-module-header">
+      <div class="home-module-label"><span data-en="">Module II</span><span data-it="">Modulo II</span></div>
+      <span class="home-module-count">17</span>
+    </div>
+    <div class="home-module-title"><span data-en="">Intermediate</span><span data-it="">Intermedio</span></div>
+    <div class="home-module-sub"><span data-en="">OOP concepts, file I/O, serialization, collections, and type checking.</span><span data-it="">OOP, file I/O, serializzazione, collezioni e type checking.</span></div>
+    <ul class="home-module-topics">
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',0)"><span class="t-num">01</span><span data-en="">Classes &amp; Objects</span><span data-it="">Classi &amp; Oggetti</span></li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',1)"><span class="t-num">02</span><span data-en="">Constructors</span><span data-it="">Costruttori</span></li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',2)"><span class="t-num">03</span><span data-en="">Properties</span><span data-it="">Propriet&agrave;</span></li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',3)"><span class="t-num">04</span>Encapsulation</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',4)"><span class="t-num">05</span><span data-en="">Inheritance</span><span data-it="">Ereditariet&agrave;</span></li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',5)"><span class="t-num">06</span>Interfaces</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',6)"><span class="t-num">07</span>Polymorphism</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',7)"><span class="t-num">08</span>Exceptions</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',8)"><span class="t-num">09</span>Static &amp; Object Init</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',9)"><span class="t-num">10</span>is, as, typeof</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',10)"><span class="t-num">11</span><span data-en="">Text Files</span><span data-it="">File di Testo</span></li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',11)"><span class="t-num">12</span>StreamReader/Writer</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',12)"><span class="t-num">13</span>JSON</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',13)"><span class="t-num">14</span>XML</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',14)"><span class="t-num">15</span>I/O Exceptions</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',15)"><span class="t-num">16</span>Dictionary&lt;K,V&gt;</li>
+      <li onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'));showTopic('intermediate',16)"><span class="t-num">17</span><span data-en="">Path Class</span><span data-it="">Classe Path</span></li>
+    </ul>
+    <button class="home-module-enter" onclick="showMod('intermediate',document.querySelector('[data-mod=intermediate]'))"><span data-en="">Open module &rarr;</span><span data-it="">Apri modulo &rarr;</span></button>
+  </div>
+
+  <!-- MODULE III -->
+  <div class="home-module">
+    <div class="home-module-header">
+      <div class="home-module-label"><span data-en="">Module III</span><span data-it="">Modulo III</span></div>
+      <span class="home-module-count">16</span>
+    </div>
+    <div class="home-module-title"><span data-en="">Advanced</span><span data-it="">Avanzato</span></div>
+    <div class="home-module-sub"><span data-en="">LINQ, async/await, generics, pattern matching, threading, and modern C# features.</span><span data-it="">LINQ, async/await, generics, pattern matching, threading e funzionalit&agrave; moderne.</span></div>
+    <ul class="home-module-topics">
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',0)"><span class="t-num">01</span>LINQ</li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',1)"><span class="t-num">02</span>Generics &lt;T&gt;</li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',2)"><span class="t-num">03</span><span data-en="">Functional Patterns</span><span data-it="">Pattern Funzionali</span></li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',3)"><span class="t-num">04</span>async / await</li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',4)"><span class="t-num">05</span>DateTime &amp; TimeSpan</li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',5)"><span class="t-num">06</span><span data-en="">Utility Types</span><span data-it="">Tipi Utility</span></li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',6)"><span class="t-num">07</span><span data-en="">Modern C#</span><span data-it="">C# Moderno</span></li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',7)"><span class="t-num">08</span>HashSet, Queue &amp; Stack</li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',8)"><span class="t-num">09</span><span data-en="">Regular Expressions</span><span data-it="">Espressioni Regolari</span></li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',9)"><span class="t-num">10</span><span data-en="">Code Organisation</span><span data-it="">Organizzazione del Codice</span></li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',10)"><span class="t-num">11</span>IDisposable &amp; using</li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',11)"><span class="t-num">12</span>IEnumerable &amp; yield</li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',12)"><span class="t-num">13</span><span data-en="">Extension Methods</span><span data-it="">Metodi Estensione</span></li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',13)"><span class="t-num">14</span>Thread, Task &amp; Parallel</li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',14)"><span class="t-num">15</span><span data-en="">Advanced Collections</span><span data-it="">Collezioni Avanzate</span></li>
+      <li onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'));showTopic('advanced',15)"><span class="t-num">16</span><span data-en="">Type Contracts</span><span data-it="">Contratti di Tipo</span></li>
+        <button class="home-module-enter" onclick="showMod('advanced',document.querySelector('[data-mod=advanced]'))"><span data-en="">Open module &rarr;</span><span data-it="">Apri modulo &rarr;</span></button>
+  </div>
+</div>
+</div>
+
 <!-- LAYOUT -->
-<div class="layout">
-<!-- SIDEBAR -->
-<aside class="sidebar">
-<div class="tree">
-<!-- I — Fondamenti (15) -->
-<div class="tree-group">
-<div class="tree-mod" data-mod="fundamentals" onclick="treeToggle(this)">
-<span class="tree-arrow">▶</span>
-<span class="tree-mod-label"><span data-en="">I — Fundamentals</span><span data-it="">I — Fondamenti</span></span>
-<span class="tree-count"><span data-en="">15</span><span data-it="">15</span></span>
-</div>
-<div class="tree-children">
-<div class="tree-item" onclick="showTopic('fundamentals',0)"><span class="tree-num">01</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Data Types</span><span data-it="">Tipi di Dato</span></span><span class="tree-sub"><span data-en="">int, double, string, bool, var, const, casting</span><span data-it="">int, double, string, bool, var, const, casting</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',1)"><span class="tree-num">02</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Input / Output</span><span data-it="">Input / Output</span></span><span class="tree-sub"><span data-en="">Console.Write, ReadLine, interpolation</span><span data-it="">Console.Write, ReadLine, interpolazione</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',2)"><span class="tree-num">03</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Arithmetic &amp; Math</span><span data-it="">Aritmetica &amp; Math</span></span><span class="tree-sub"><span data-en="">+−×÷%, compound operators, Math library</span><span data-it="">+−×÷%, operatori composti, libreria Math</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',3)"><span class="tree-num">04</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Comparison &amp; Booleans</span><span data-it="">Confronto &amp; Booleani</span></span><span class="tree-sub"><span data-en="">==, !=, &amp;&amp;, ||, !, ternary operator</span><span data-it="">==, !=, &amp;&amp;, ||, !, operatore ternario</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',4)"><span class="tree-num">05</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Control Structures</span><span data-it="">Strutture di Controllo</span></span><span class="tree-sub"><span data-en="">if/else, switch, switch expression</span><span data-it="">if/else, switch, switch expression</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',5)"><span class="tree-num">06</span><div class="tree-item-text"><span class="tree-title"><span data-en="">for Loop</span><span data-it="">Ciclo for</span></span><span class="tree-sub"><span data-en="">Known iterations, break, continue, step</span><span data-it="">Iterazioni note, break, continue, step</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',6)"><span class="tree-num">07</span><div class="tree-item-text"><span class="tree-title"><span data-en="">while / do-while Loop</span><span data-it="">Ciclo while / do-while</span></span><span class="tree-sub"><span data-en="">Condition before/after, interactive loop</span><span data-it="">Condizione prima/dopo, loop interattivo</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',7)"><span class="tree-num">08</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Array &amp; foreach</span><span data-it="">Array &amp; foreach</span></span><span class="tree-sub"><span data-en="">Fixed array, 2D, jagged, Array methods</span><span data-it="">Array fisso, 2D, jagged, metodi Array</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',8)"><span class="tree-num">09</span><div class="tree-item-text"><span class="tree-title"><span data-en="">List&lt;T&gt;</span><span data-it="">List&lt;T&gt;</span></span><span class="tree-sub"><span data-en="">Add, Remove, Find, Sort, Clear, ToArray</span><span data-it="">Add, Remove, Find, Sort, Clear, ToArray</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',9)"><span class="tree-num">10</span><div class="tree-item-text"><span class="tree-title"><span data-en="">String — Methods</span><span data-it="">String — Metodi</span></span><span class="tree-sub"><span data-en="">Length, Split, Trim, Replace, Substring...</span><span data-it="">Length, Split, Trim, Replace, Substring…</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',10)"><span class="tree-num">11</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Enum</span><span data-it="">Enum</span></span><span class="tree-sub"><span data-en="">Enumerations, values, casting, Flags</span><span data-it="">Enumerazioni, valori, casting, Flags</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',11)"><span class="tree-num">12</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Methods</span><span data-it="">Metodi</span></span><span class="tree-sub"><span data-en="">Parameters, return, overload, ref/out, recursion</span><span data-it="">Parametri, return, overload, ref/out, ricorsione</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',12)"><span class="tree-num">13</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Struct</span><span data-it="">Struct</span></span><span class="tree-sub"><span data-en="">Value type, constructors, methods</span><span data-it="">Tipo valore, costruttori, metodi</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',13)"><span class="tree-num">14</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Nullable &amp; Null Operators</span><span data-it="">Nullable &amp; Null Operators</span></span><span class="tree-sub"><span data-en="">int?, ??, ?., HasValue</span><span data-it="">int?, ??, ?., HasValue</span></span></div></div>
-<div class="tree-item" onclick="showTopic('fundamentals',14)"><span class="tree-num">15</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Scope &amp; Visibility</span><span data-it="">Scope &amp; Visibilità</span></span><span class="tree-sub"><span data-en="">Local scope, block, shadowing</span><span data-it="">Scope locale, blocco, shadowing</span></span></div></div>
-</div>
-</div>
-<!-- II — Intermedio (17) -->
-<div class="tree-group">
-<div class="tree-mod" data-mod="intermediate" onclick="treeToggle(this)">
-<span class="tree-arrow">▶</span>
-<span class="tree-mod-label"><span data-en="">II — Intermediate</span><span data-it="">II — Intermedio</span></span>
-<span class="tree-count"><span data-en="">17</span><span data-it="">17</span></span>
-</div>
-<div class="tree-children">
-<div class="tree-item" onclick="showTopic('intermediate',0)"><span class="tree-num">01</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Classes &amp; Objects</span><span data-it="">Classi &amp; Oggetti</span></span><span class="tree-sub"><span data-en="">Blueprint, instance, new, this</span><span data-it="">Blueprint, istanza, new, this</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',1)"><span class="tree-num">02</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Constructors</span><span data-it="">Costruttori</span></span><span class="tree-sub"><span data-en="">Default, parameters, overload, object initializer</span><span data-it="">Default, parametri, overload, object initializer</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',2)"><span class="tree-num">03</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Properties</span><span data-it="">Proprietà</span></span><span class="tree-sub"><span data-en="">get/set, auto-property, validation, read-only</span><span data-it="">get/set, auto-property, validazione, read-only</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',3)"><span class="tree-num">04</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Encapsulation</span><span data-it="">Incapsulamento</span></span><span class="tree-sub"><span data-en="">public, private, protected, internal</span><span data-it="">public, private, protected, internal</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',4)"><span class="tree-num">05</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Inheritance</span><span data-it="">Ereditarietà</span></span><span class="tree-sub"><span data-en="">class Child : Parent, base, override</span><span data-it="">class Figlia : Padre, base, override</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',5)"><span class="tree-num">06</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Interfaces</span><span data-it="">Interfacce</span></span><span class="tree-sub"><span data-en="">interface, multiple implementation, contract</span><span data-it="">interface, implementazione multipla, contratto</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',6)"><span class="tree-num">07</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Polymorphism</span><span data-it="">Polimorfismo</span></span><span class="tree-sub"><span data-en="">virtual, override, abstract, sealed</span><span data-it="">virtual, override, abstract, sealed</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',7)"><span class="tree-num">08</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Exceptions</span><span data-it="">Eccezioni</span></span><span class="tree-sub"><span data-en="">try/catch/finally, throw, custom exceptions</span><span data-it="">try/catch/finally, throw, custom exceptions</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',8)"><span class="tree-num">09</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Static &amp; Object Init</span><span data-it="">Static &amp; Object Init</span></span><span class="tree-sub"><span data-en="">static class, static members, initializer</span><span data-it="">static class, membri statici, initializer</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',9)"><span class="tree-num">10</span><div class="tree-item-text"><span class="tree-title"><span data-en="">is, as, typeof</span><span data-it="">is, as, typeof</span></span><span class="tree-sub"><span data-en="">Type checking, safe casting, runtime</span><span data-it="">Type checking, casting sicuro, runtime</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',10)"><span class="tree-num">11</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Text Files</span><span data-it="">File di Testo</span></span><span class="tree-sub"><span data-en="">ReadAllText, WriteAllText, AppendAllText</span><span data-it="">ReadAllText, WriteAllText, AppendAllText</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',11)"><span class="tree-num">12</span><div class="tree-item-text"><span class="tree-title"><span data-en="">StreamReader/Writer</span><span data-it="">StreamReader/Writer</span></span><span class="tree-sub"><span data-en="">Line-by-line read/write, UTF-8 encoding</span><span data-it="">Lettura/scrittura riga per riga, encoding UTF-8</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',12)"><span class="tree-num">13</span><div class="tree-item-text"><span class="tree-title"><span data-en="">JSON</span><span data-it="">JSON</span></span><span class="tree-sub"><span data-en="">JsonSerializer Serialize/Deserialize, options</span><span data-it="">JsonSerializer Serialize/Deserialize, opzioni</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',13)"><span class="tree-num">14</span><div class="tree-item-text"><span class="tree-title"><span data-en="">XML</span><span data-it="">XML</span></span><span class="tree-sub"><span data-en="">XmlSerializer, XDocument, LINQ to XML</span><span data-it="">XmlSerializer, XDocument, LINQ to XML</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',14)"><span class="tree-num">15</span><div class="tree-item-text"><span class="tree-title"><span data-en="">I/O Exceptions</span><span data-it="">Eccezioni I/O</span></span><span class="tree-sub"><span data-en="">FileNotFoundException, IOException, patterns</span><span data-it="">FileNotFoundException, IOException, pattern</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',15)"><span class="tree-num">16</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Dictionary&lt;K,V&gt;</span><span data-it="">Dictionary&lt;K,V&gt;</span></span><span class="tree-sub"><span data-en="">Key-value, ContainsKey, TryGetValue</span><span data-it="">Chiave-valore, ContainsKey, TryGetValue</span></span></div></div>
-<div class="tree-item" onclick="showTopic('intermediate',16)"><span class="tree-num">17</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Path Class</span><span data-it="">Classe Path</span></span><span class="tree-sub"><span data-en="">Combine, GetFileName, GetExtension</span><span data-it="">Combine, GetFileName, GetExtension</span></span></div></div>
-</div>
-</div>
-<!-- III — Avanzato (23) -->
-<div class="tree-group">
-<div class="tree-mod" data-mod="advanced" onclick="treeToggle(this)">
-<span class="tree-arrow">▶</span>
-<span class="tree-mod-label"><span data-en="">III — Advanced</span><span data-it="">III — Avanzato</span></span>
-<span class="tree-count"><span data-en="">23</span><span data-it="">23</span></span>
-</div>
-<div class="tree-children">
-<div class="tree-item" onclick="showTopic('advanced',0)"><span class="tree-num">01</span><div class="tree-item-text"><span class="tree-title"><span data-en="">LINQ</span><span data-it="">LINQ</span></span><span class="tree-sub"><span data-en="">Where, Select, OrderBy, GroupBy, First, Sum</span><span data-it="">Where, Select, OrderBy, GroupBy, First, Sum</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',1)"><span class="tree-num">02</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Generics &lt;T&gt;</span><span data-it="">Generics &lt;T&gt;</span></span><span class="tree-sub"><span data-en="">Generic classes/methods, constraints where T:</span><span data-it="">Classi/metodi generici, constraints where T:</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',2)"><span class="tree-num">03</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Delegates &amp; Events</span><span data-it="">Delegates &amp; Events</span></span><span class="tree-sub"><span data-en="">Func, Action, Predicate, delegate, event</span><span data-it="">Func, Action, Predicate, delegate, event</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',3)"><span class="tree-num">04</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Lambda &amp; Closures</span><span data-it="">Lambda &amp; Closures</span></span><span class="tree-sub"><span data-en="">=&gt; expressions, body, captured variables</span><span data-it="">=&gt; espressioni, corpo, variabili catturate</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',4)"><span class="tree-num">05</span><div class="tree-item-text"><span class="tree-title"><span data-en="">async / await</span><span data-it="">async / await</span></span><span class="tree-sub"><span data-en="">Task, async, await, WhenAll, WhenAny</span><span data-it="">Task, async, await, WhenAll, WhenAny</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',5)"><span class="tree-num">06</span><div class="tree-item-text"><span class="tree-title"><span data-en="">DateTime &amp; TimeSpan</span><span data-it="">DateTime &amp; TimeSpan</span></span><span class="tree-sub"><span data-en="">Now, Parse, Add, Format, date difference</span><span data-it="">Now, Parse, Add, Format, differenza date</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',6)"><span class="tree-num">07</span><div class="tree-item-text"><span class="tree-title"><span data-en="">StringBuilder</span><span data-it="">StringBuilder</span></span><span class="tree-sub"><span data-en="">Append, Insert, Replace, loop performance</span><span data-it="">Append, Insert, Replace, performance loop</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',7)"><span class="tree-num">08</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Random &amp; Utilities</span><span data-it="">Random &amp; Utilità</span></span><span class="tree-sub"><span data-en="">Next, NextDouble, shuffle, random element</span><span data-it="">Next, NextDouble, shuffle, elemento casuale</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',8)"><span class="tree-num">09</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Tuple &amp; ValueTuple</span><span data-it="">Tuple &amp; ValueTuple</span></span><span class="tree-sub"><span data-en="">Multiple return, named tuples, deconstruction</span><span data-it="">Ritorno multiplo, named tuples, decostruzione</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',9)"><span class="tree-num">10</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Pattern Matching</span><span data-it="">Pattern Matching</span></span><span class="tree-sub"><span data-en="">Advanced switch expression, is, when, range</span><span data-it="">switch expression avanzata, is, when, range</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',10)"><span class="tree-num">11</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Record</span><span data-it="">Record</span></span><span class="tree-sub"><span data-en="">Immutability, with expression, value equality</span><span data-it="">Immutabilità, with expression, value equality</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',11)"><span class="tree-num">12</span><div class="tree-item-text"><span class="tree-title"><span data-en="">HashSet, Queue &amp; Stack</span><span data-it="">HashSet, Queue &amp; Stack</span></span><span class="tree-sub"><span data-en="">Unique elements, FIFO, LIFO</span><span data-it="">Elementi unici, FIFO, LIFO</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',12)"><span class="tree-num">13</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Regular Expressions</span><span data-it="">Regular Expressions</span></span><span class="tree-sub"><span data-en="">IsMatch, Match, Replace, Groups</span><span data-it="">IsMatch, Match, Replace, Groups</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',13)"><span class="tree-num">14</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Preprocessor &amp; Attributes</span><span data-it="">Preprocessore &amp; Attributi</span></span><span class="tree-sub"><span data-en="">#region, #if DEBUG, [Obsolete], [Serializable]</span><span data-it="">#region, #if DEBUG, [Obsolete], [Serializable]</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',14)"><span class="tree-num">15</span><div class="tree-item-text"><span class="tree-title"><span data-en="">IDisposable &amp; using</span><span data-it="">IDisposable &amp; using</span></span><span class="tree-sub"><span data-en="">Resource management, Dispose pattern, syntactic using</span><span data-it="">Gestione risorse, pattern Dispose, using sintattico</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',15)"><span class="tree-num">16</span><div class="tree-item-text"><span class="tree-title"><span data-en="">IEnumerable &amp; yield</span><span data-it="">IEnumerable &amp; yield</span></span><span class="tree-sub"><span data-en="">Lazy iterators, yield return, yield break</span><span data-it="">Iteratori pigri, yield return, yield break</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',16)"><span class="tree-num">17</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Extension Methods</span><span data-it="">Extension Methods</span></span><span class="tree-sub"><span data-en="">Extension methods, this keyword, static class</span><span data-it="">Metodi estensione, this keyword, static class</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',17)"><span class="tree-num">18</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Thread, Task &amp; Parallel</span><span data-it="">Thread, Task &amp; Parallel</span></span><span class="tree-sub"><span data-en="">Task.Run, lock, CancellationToken, Interlocked</span><span data-it="">Task.Run, lock, CancellationToken, Interlocked</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',18)"><span class="tree-num">19</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Advanced Collections</span><span data-it="">Collezioni Avanzate</span></span><span class="tree-sub"><span data-en="">SortedDictionary, ConcurrentDictionary, LinkedList</span><span data-it="">SortedDictionary, ConcurrentDictionary, LinkedList</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',19)"><span class="tree-num">20</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Core Interfaces</span><span data-it="">Interfacce Fondamentali</span></span><span class="tree-sub"><span data-en="">IComparable, IEquatable, IComparer</span><span data-it="">IComparable, IEquatable, IComparer</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',20)"><span class="tree-num">21</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Operator Overloading</span><span data-it="">Operator Overloading</span></span><span class="tree-sub"><span data-en="">Overloading +, ==, !=, implicit conversions</span><span data-it="">Sovraccaricare +, ==, !=, conversioni implicite</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',21)"><span class="tree-num">22</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Indexers &amp; Advanced Properties</span><span data-it="">Indexers &amp; Proprietà Avanzate</span></span><span class="tree-sub"><span data-en="">Indexers, init-only, required, backing field</span><span data-it="">Indicizzatori, init-only, required, backing field</span></span></div></div>
-<div class="tree-item" onclick="showTopic('advanced',22)"><span class="tree-num">23</span><div class="tree-item-text"><span class="tree-title"><span data-en="">Namespaces &amp; using</span><span data-it="">Namespaces &amp; using</span></span><span class="tree-sub"><span data-en="">namespace, global using, file-scoped, alias</span><span data-it="">namespace, global using, file-scoped, alias</span></span></div></div>
-</div>
-</div>
-</div>
-</aside>
+<div class="layout view" id="view-reference">
 <!-- CONTENT -->
 <main class="content">
 <!-- SECTION FONDAMENTI (15) -->
-<div class="section active" id="section-fundamentals">
+<div class="section" id="section-fundamentals">
+<div class="section-inner">
 <div class="section-title"><span data-en="">I — Fundamentals</span><span data-it="">I — Fondamenti</span></div>
 <!-- 1. Tipi di Dato -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">1. Data Types</span><span data-it="">1. Tipi di Dato</span></h3><div class="topic-sub"><span data-en="">int, long, double, decimal, string, char, bool, var, const, casting</span><span data-it="">int, long, double, decimal, string, char, bool, var, const, casting</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Data Types</span><span data-it="">Tipi di Dato</span></h3><div class="topic-sub"><span data-en="">int, long, double, decimal, string, char, bool, var, const, casting</span><span data-it="">int, long, double, decimal, string, char, bool, var, const, casting</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Numeri Interi — usa sempre int per iniziare</h4>
@@ -577,9 +849,9 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"{bytes:N0} = {valo
 </div>
 <!-- 2. Input / Output -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">2. Input / Output</span><span data-it="">2. Input / Output</span></h3><div class="topic-sub"><span data-en="">Console.Write, ReadLine, interpolation</span><span data-it="">Console.Write/WriteLine, ReadLine, interpolazione, formattazione, TryParse, colori</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Input / Output</span><span data-it="">Input / Output</span></h3><div class="topic-sub"><span data-en="">Console.Write, ReadLine, interpolation</span><span data-it="">Console.Write/WriteLine, ReadLine, interpolazione, formattazione, TryParse, colori</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Output — stampare a schermo</h4>
@@ -850,9 +1122,9 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"{"Subtotale:",-20}
 </div>
 <!-- 3. Aritmetica & Math -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">3. Arithmetic &amp; Math</span><span data-it="">3. Aritmetica &amp; Math</span></h3><div class="topic-sub"><span data-en="">+−×÷%, compound operators, Math library</span><span data-it="">+−×÷%, modulo, operatori composti, incremento, libreria Math, progetti</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Arithmetic &amp; Math</span><span data-it="">Aritmetica &amp; Math</span></h3><div class="topic-sub"><span data-en="">+−×÷%, compound operators, Math library</span><span data-it="">+−×÷%, modulo, operatori composti, incremento, libreria Math, progetti</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Operazioni base</h4>
@@ -1034,9 +1306,9 @@ Console.<span class="fn">Write</span>(<span class="str">"c: "</span>); <span cla
 </div>
 <!-- 4. Confronto & Booleani -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">4. Comparison &amp; Booleans</span><span data-it="">4. Operatori di Confronto &amp; Booleani</span></h3><div class="topic-sub"><span data-en="">==, !=, &amp;&amp;, ||, !, ternary operator</span><span data-it="">==, !=, &gt;, &lt;, &amp;&amp;, ||, !, ternario, short-circuit</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Comparison &amp; Booleans</span><span data-it="">Confronto &amp; Booleani</span></h3><div class="topic-sub"><span data-en="">==, !=, &amp;&amp;, ||, !, ternary operator</span><span data-it="">==, !=, &gt;, &lt;, &amp;&amp;, ||, !, ternario, short-circuit</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Operatori di confronto</h4>
@@ -1217,9 +1489,9 @@ Console.<span class="fn">Write</span>(<span class="str">"Carta? s/n: "</span>); 
 </div>
 <!-- 5. Strutture di Controllo -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">5. Control Structures</span><span data-it="">5. Strutture di Controllo</span></h3><div class="topic-sub"><span data-en="">if/else, switch, switch expression</span><span data-it="">if/else if/else, switch, switch expression (C# 8+), progetti</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Control Structures</span><span data-it="">Strutture di Controllo</span></h3><div class="topic-sub"><span data-en="">if/else, switch, switch expression</span><span data-it="">if/else if/else, switch, switch expression (C# 8+), progetti</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>if / else if / else</h4>
@@ -1427,11 +1699,16 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"Imposta: {imp:C}  
 </div>
 <!-- 6. Ciclo for -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">6. for Loop</span><span data-it="">6. Ciclo for</span></h3><div class="topic-sub"><span data-en="">Known iterations, break, continue, step</span><span data-it="">Iterazioni note, contatore, break, continue, step, cicli annidati</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Loops</span><span data-it="">Cicli</span></h3><div class="topic-sub"><span data-en="">for, while, do-while, break, continue, step</span><span data-it="">for, while, do-while, break, continue, passo</span></div></div><span class="arrow">&#9660;</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<h4>for Loop</h4>
+<p class="pending-notice">Translation pending…</p>
+
+<h4>while / do-while</h4>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
+<h4>Ciclo for</h4>
 <h4>Struttura base</h4>
 <pre><span class="cm">// for (inizio; condizione; aggiornamento)</span>
 <span class="kw">for</span> (<span class="ty">int</span> i = <span class="num">0</span>; i &lt; <span class="num">5</span>; i++)
@@ -1613,15 +1890,8 @@ Console.<span class="fn">Write</span>(<span class="str">"Termini: "</span>); <sp
     Console.<span class="fn">Write</span>(<span class="str">$"{a9} "</span>);
     (<span class="ty">long</span> tmp) = a9 + b9; a9 = b9; b9 = tmp;
 }</pre>
-</div>
-</div>
-<!-- 7. Ciclo while / do-while -->
-<div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">7. while / do-while Loop</span><span data-it="">7. Ciclo while / do-while</span></h3><div class="topic-sub"><span data-en="">Condition before/after, interactive loop</span><span data-it="">Condizione prima/dopo, input utente, loop infinito, menu interattivo</span></div></div><span class="arrow">▼</span></div>
-<div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
-</div>
-<div class="it-content topic-body">
+
+<h4>while / do-while</h4>
 <h4>while — condizione controllata PRIMA</h4>
 <pre><span class="cm">// Sintassi: while (condizione) { ... }</span>
 <span class="cm">// Se la condizione è falsa subito, il blocco NON esegue mai.</span>
@@ -1815,11 +2085,14 @@ Console.<span class="fn">WriteLine</span>(tot8==<span class="num">21</span>?<spa
     Console.<span class="fn">WriteLine</span>(<span class="str">$"Hai scritto: {msg9}"</span>);</pre>
 </div>
 </div>
+
+<!-- 7. Ciclo while / do-while -->
+
 <!-- 8. Array & foreach -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">8. Array &amp; foreach</span><span data-it="">8. Array &amp; foreach</span></h3><div class="topic-sub"><span data-en="">Fixed array, 2D, jagged, Array methods</span><span data-it="">Array fisso, indici, foreach, 2D, metodi Array, errori comuni</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Array &amp; foreach</span><span data-it="">Array &amp; foreach</span></h3><div class="topic-sub"><span data-en="">Fixed array, 2D, jagged, Array methods</span><span data-it="">Array fisso, indici, foreach, 2D, metodi Array, errori comuni</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è un array?</h4>
@@ -2032,9 +2305,9 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"Media: {med6:F1}"<
 </div>
 <!-- 9. List<T> -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">9. List&lt;T&gt;</span><span data-it="">9. List&lt;T&gt;</span></h3><div class="topic-sub"><span data-en="">Add, Remove, Find, Sort, Clear, ToArray</span><span data-it="">Array dinamico, Add/Remove/Find/Sort/Clear, confronto con Array</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">List&lt;T&gt;</span><span data-it="">List&lt;T&gt;</span></h3><div class="topic-sub"><span data-en="">Add, Remove, Find, Sort, Clear, ToArray</span><span data-it="">Array dinamico, Add/Remove/Find/Sort/Clear, confronto con Array</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è una List?</h4>
@@ -2226,9 +2499,9 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"Servito: {prossimo
 </div>
 <!-- 10. String — Metodi -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">10. String — Methods</span><span data-it="">10. String — Metodi Completi</span></h3><div class="topic-sub"><span data-en="">Length, Split, Trim, Replace, Substring...</span><span data-it="">Length, ToUpper, Trim, Replace, Split, Contains, Substring, Join, IsNullOrEmpty</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">String Methods</span><span data-it="">Metodi String</span></h3><div class="topic-sub"><span data-en="">Length, Split, Trim, Replace, Substring...</span><span data-it="">Length, ToUpper, Trim, Replace, Split, Contains, Substring, Join, IsNullOrEmpty</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Le stringhe sono immutabili</h4>
@@ -2459,9 +2732,9 @@ Console.<span class="fn">Write</span>(<span class="str">"Nome completo: "</span>
 </div>
 <!-- 11. Enum -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">11. Enum</span><span data-it="">11. Enum</span></h3><div class="topic-sub"><span data-en="">Enumerations, values, casting, Flags</span><span data-it="">Enumerazioni, valori personalizzati, casting, switch, Flags</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Enum</span><span data-it="">Enum</span></h3><div class="topic-sub"><span data-en="">Enumerations, values, casting, Flags</span><span data-it="">Enumerazioni, valori personalizzati, casting, switch, Flags</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è un Enum?</h4>
@@ -2682,9 +2955,9 @@ Luce luce9 = Luce.Rosso;
 </div>
 <!-- 12. Metodi -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">12. Methods</span><span data-it="">12. I Metodi</span></h3><div class="topic-sub"><span data-en="">Parameters, return, overload, ref/out, recursion</span><span data-it="">Parametri, return, overload, ref/out, params, ricorsione, expression-bodied</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Methods</span><span data-it="">Metodi</span></h3><div class="topic-sub"><span data-en="">Parameters, return, overload, ref/out, recursion</span><span data-it="">Parametri, return, overload, ref/out, params, ricorsione, expression-bodied</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è un metodo?</h4>
@@ -2964,9 +3237,9 @@ Console.<span class="fn">WriteLine</span>(<span class="fn">Palindromo</span>(<sp
 </div>
 <!-- 13. Struct -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">13. Struct</span><span data-it="">13. Struct</span></h3><div class="topic-sub"><span data-en="">Value type, constructors, methods</span><span data-it="">Tipo valore, campi, costruttori, metodi, struct vs class</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Struct</span><span data-it="">Struct</span></h3><div class="topic-sub"><span data-en="">Value type, constructors, methods</span><span data-it="">Tipo valore, campi, costruttori, metodi, struct vs class</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è una struct?</h4>
@@ -3223,9 +3496,9 @@ Console.<span class="fn">Write</span>(<span class="str">"Cerca codice: "</span>)
 </div>
 <!-- 14. Nullable & Null Operators -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">14. Nullable &amp; Null Operators</span><span data-it="">14. Nullable &amp; Null Operators</span></h3><div class="topic-sub"><span data-en="">int?, ??, ?., HasValue</span><span data-it="">int?, string?, ??, ?., ??=, HasValue, null-forgiving</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Nullable &amp; Null Operators</span><span data-it="">Nullable &amp; Null Operators</span></h3><div class="topic-sub"><span data-en="">int?, ??, ?., HasValue</span><span data-it="">int?, string?, ??, ?., ??=, HasValue, null-forgiving</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è null?</h4>
@@ -3457,9 +3730,9 @@ Console.<span class="fn">WriteLine</span>(connStr);
 </div>
 <!-- 15. Scope & Visibilità -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">15. Scope &amp; Visibility</span><span data-it="">15. Scope &amp; Visibilità delle Variabili</span></h3><div class="topic-sub"><span data-en="">Local scope, block, shadowing</span><span data-it="">Scope locale, blocco, metodo, classe, shadowing, buone pratiche</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Scope &amp; Visibility</span><span data-it="">Scope &amp; Visibilità</span></h3><div class="topic-sub"><span data-en="">Local scope, block, shadowing</span><span data-it="">Scope locale, blocco, metodo, classe, shadowing, buone pratiche</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è lo scope?</h4>
@@ -3676,14 +3949,18 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"Creati: {ContaOgge
 </div>
 </div>
 </div>
+
+
+</div>
 <!-- SECTION INTERMEDIO (17) -->
 <div class="section" id="section-intermediate">
+<div class="section-inner">
 <div class="section-title"><span data-en="">II — Intermediate</span><span data-it="">II — Intermedio</span></div>
 <!-- 1. Classi & Oggetti -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">1. Classes &amp; Objects</span><span data-it="">1. Classi &amp; Oggetti</span></h3><div class="topic-sub"><span data-en="">Blueprint, instance, new, this, public fields</span><span data-it="">Blueprint, istanza, new, this, campi pubblici</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Classes &amp; Objects</span><span data-it="">Classi &amp; Oggetti</span></h3><div class="topic-sub"><span data-en="">Blueprint, instance, new, this, public fields</span><span data-it="">Blueprint, istanza, new, this, campi pubblici</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è una Classe? — Il Blueprint</h4>
@@ -3960,9 +4237,9 @@ copia.Nome = <span class="str">"B"</span>;
 </div>
 <!-- 2. Costruttori & Object Initializer -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">2. Constructors</span><span data-it="">2. Costruttori &amp; Object Initializer</span></h3><div class="topic-sub"><span data-en="">Default, parameters, overload, object initializer</span><span data-it="">Costruttore di default, con parametri, overload, object initializer</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Constructors</span><span data-it="">Costruttori</span></h3><div class="topic-sub"><span data-en="">Default, parameters, overload, object initializer</span><span data-it="">Costruttore di default, con parametri, overload, object initializer</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è un Costruttore?</h4>
@@ -4245,9 +4522,9 @@ Libro l = <span class="kw">new</span> <span class="ty">Libro</span> { Titolo = <
 </div>
 <!-- 3. Proprietà (Properties) -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">3. Properties</span><span data-it="">3. Proprietà (Properties)</span></h3><div class="topic-sub"><span data-en="">get/set, auto-property, validation, read-only</span><span data-it="">get/set, auto-property, validazione, read-only, init</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Properties</span><span data-it="">Proprietà</span></h3><div class="topic-sub"><span data-en="">get/set, auto-property, validation, read-only</span><span data-it="">get/set, auto-property, validazione, read-only, init</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Perché le Proprietà?</h4>
@@ -4462,9 +4739,9 @@ Utente u = <span class="kw">new</span> <span class="ty">Utente</span> {
 </div>
 <!-- 4. Incapsulamento -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">4. Encapsulation</span><span data-it="">4. Incapsulamento</span></h3><div class="topic-sub"><span data-en="">public, private, protected, internal</span><span data-it="">public, private, protected, internal — modificatori di accesso</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Encapsulation</span><span data-it="">Incapsulamento</span></h3><div class="topic-sub"><span data-en="">public, private, protected, internal</span><span data-it="">public, private, protected, internal — modificatori di accesso</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è l'Incapsulamento?</h4>
@@ -4876,9 +5153,9 @@ bad.elementi = <span class="kw">null</span>;          <span class="cm">// NullRe
 </div>
 <!-- 5. Ereditarietà -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">5. Inheritance</span><span data-it="">5. Ereditarietà</span></h3><div class="topic-sub"><span data-en="">class Child : Parent, base, override</span><span data-it="">class Figlia : Padre, base, override, virtual, sealed</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Inheritance</span><span data-it="">Ereditarietà</span></h3><div class="topic-sub"><span data-en="">class Child : Parent, base, override</span><span data-it="">class Figlia : Padre, base, override, virtual, sealed</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è l'Ereditarietà?</h4>
@@ -5433,9 +5710,9 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"\nCosto totale men
 </div>
 <!-- 6. Interfacce -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">6. Interfaces</span><span data-it="">6. Interfacce</span></h3><div class="topic-sub"><span data-en="">interface, multiple implementation, contract</span><span data-it="">interface, implementazione multipla, contratto</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Interfaces</span><span data-it="">Interfacce</span></h3><div class="topic-sub"><span data-en="">interface, multiple implementation, contract</span><span data-it="">interface, implementazione multipla, contratto</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'e un'Interfaccia?</h4>
@@ -5914,9 +6191,9 @@ manager.<span class="fn">TerminaTutti</span>();</pre>
 </div>
 <!-- 7. Polimorfismo, Abstract & Sealed -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">7. Polymorphism</span><span data-it="">7. Polimorfismo, Abstract &amp; Sealed</span></h3><div class="topic-sub"><span data-en="">virtual, override, abstract, sealed</span><span data-it="">virtual, override, abstract class, sealed</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Polymorphism</span><span data-it="">Polimorfismo</span></h3><div class="topic-sub"><span data-en="">virtual, override, abstract, sealed</span><span data-it="">virtual, override, abstract class, sealed</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è il Polimorfismo?</h4>
@@ -6426,9 +6703,9 @@ p2.<span class="fn">M</span>();  <span class="cm">// "Figlio" - polimorfismo fun
 </div>
 <!-- 8. Gestione delle Eccezioni -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">8. Exceptions</span><span data-it="">8. Gestione delle Eccezioni</span></h3><div class="topic-sub"><span data-en="">try/catch/finally, throw, custom exceptions</span><span data-it="">try/catch/finally, throw, eccezioni personalizzate</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Exceptions</span><span data-it="">Eccezioni</span></h3><div class="topic-sub"><span data-en="">try/catch/finally, throw, custom exceptions</span><span data-it="">try/catch/finally, throw, eccezioni personalizzate</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'e un'Eccezione?</h4>
@@ -7085,9 +7362,9 @@ DateTime nascita = InputValidator.<span class="fn">LeggiData</span>(<span class=
 </div>
 <!-- 9. Static & Object Initializer -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">9. Static &amp; Object Init</span><span data-it="">9. Static &amp; Object Initializer</span></h3><div class="topic-sub"><span data-en="">static class, static members, initializer</span><span data-it="">static class, membri statici, singleton, object initializer, costruttore statico</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Static Members</span><span data-it="">Membri Statici</span></h3><div class="topic-sub"><span data-en="">static class, static members, initializer</span><span data-it="">static class, membri statici, singleton, object initializer, costruttore statico</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è static?</h4>
@@ -7489,9 +7766,9 @@ GestoreCarrello.Istanza.<span class="fn">StampaCarrello</span>();</pre>
 </div>
 <!-- 10. is, as, typeof -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">10. is, as, typeof — Type Checking</span><span data-it="">10. is, as, typeof — Type Checking</span></h3><div class="topic-sub"><span data-en="">is, as, typeof, GetType, pattern matching, safe cast</span><span data-it="">is, as, typeof, GetType, pattern matching, cast sicuro</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Type Checking</span><span data-it="">Verifica del Tipo</span></h3><div class="topic-sub"><span data-en="">is, as, typeof, GetType, pattern matching, safe cast</span><span data-it="">is, as, typeof, GetType, pattern matching, cast sicuro</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è il Type Checking?</h4>
@@ -7800,9 +8077,9 @@ Console.<span class="fn">WriteLine</span>(<span class="fn">Serializza</span>(<sp
 </div>
 <!-- 11. File di Testo -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">11. Text Files</span><span data-it="">11. File di Testo</span></h3><div class="topic-sub"><span data-en="">ReadAllText, WriteAllText, AppendAllText</span><span data-it="">File, StreamReader, StreamWriter, Path, Directory, encoding</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Text Files</span><span data-it="">File di Testo</span></h3><div class="topic-sub"><span data-en="">ReadAllText, WriteAllText, AppendAllText</span><span data-it="">File, StreamReader, StreamWriter, Path, Directory, encoding</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è System.IO?</h4>
@@ -8228,9 +8505,9 @@ Console.<span class="fn">WriteLine</span>(<span class="str">$"Totale inventario:
 </div>
 <!-- 12. StreamReader & StreamWriter -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">12. StreamReader/Writer</span><span data-it="">12. StreamReader &amp; StreamWriter</span></h3><div class="topic-sub"><span data-en="">Line-by-line read/write, UTF-8 encoding</span><span data-it="">stream, buffer, encoding, using, lettura riga per riga, file grandi</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">StreamReader / Writer</span><span data-it="">StreamReader / Writer</span></h3><div class="topic-sub"><span data-en="">Line-by-line read/write, UTF-8 encoding</span><span data-it="">stream, buffer, encoding, using, lettura riga per riga, file grandi</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è uno Stream?</h4>
@@ -8630,9 +8907,9 @@ sw4.<span class="fn">WriteLine</span>(<span class="str">"Dati"</span>);
 </div>
 <!-- 13. JSON -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">13. JSON</span><span data-it="">13. JSON</span></h3><div class="topic-sub"><span data-en="">JsonSerializer Serialize/Deserialize, options</span><span data-it="">JsonSerializer, Serialize, Deserialize, opzioni, attributi, file</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">JSON</span><span data-it="">JSON</span></h3><div class="topic-sub"><span data-en="">JsonSerializer Serialize/Deserialize, options</span><span data-it="">JsonSerializer, Serialize, Deserialize, opzioni, attributi, file</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è JSON?</h4>
@@ -9039,9 +9316,9 @@ Console.<span class="fn">WriteLine</span>(JsonSerializer.<span class="fn">Serial
 </div>
 <!-- 14. XML -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">14. XML</span><span data-it="">14. XML</span></h3><div class="topic-sub"><span data-en="">XmlSerializer, XDocument, LINQ to XML</span><span data-it="">XmlSerializer, XDocument, LINQ to XML, attributi, namespace</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">XML</span><span data-it="">XML</span></h3><div class="topic-sub"><span data-en="">XmlSerializer, XDocument, LINQ to XML</span><span data-it="">XmlSerializer, XDocument, LINQ to XML, attributi, namespace</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'è XML?</h4>
@@ -9521,9 +9798,9 @@ inv.<span class="fn">ReportSottoSoglia</span>(<span class="num">5</span>);</pre>
 </div>
 <!-- 15. Eccezioni I/O -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">15. I/O Exceptions</span><span data-it="">15. Eccezioni I/O</span></h3><div class="topic-sub"><span data-en="">FileNotFoundException, IOException, patterns</span><span data-it="">FileNotFoundException, IOException, UnauthorizedAccessException, pattern robusti</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">I/O Exceptions</span><span data-it="">Eccezioni I/O</span></h3><div class="topic-sub"><span data-en="">FileNotFoundException, IOException, patterns</span><span data-it="">FileNotFoundException, IOException, UnauthorizedAccessException, pattern robusti</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Perche le Operazioni I/O Falliscono?</h4>
@@ -10052,9 +10329,9 @@ StreamReader sr = <span class="kw">new</span> <span class="ty">StreamReader</spa
 </div>
 <!-- 16. Dictionary<K,V> -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">16. Dictionary&lt;K,V&gt;</span><span data-it="">16. Dictionary&lt;K,V&gt;</span></h3><div class="topic-sub"><span data-en="">Key-value, ContainsKey, TryGetValue</span><span data-it="">chiave-valore, TryGetValue, ContainsKey, iterazione, dizionari annidati</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Dictionary&lt;K,V&gt;</span><span data-it="">Dictionary&lt;K,V&gt;</span></h3><div class="topic-sub"><span data-en="">Key-value, ContainsKey, TryGetValue</span><span data-it="">chiave-valore, TryGetValue, ContainsKey, iterazione, dizionari annidati</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'e un Dictionary?</h4>
@@ -10475,9 +10752,9 @@ g.<span class="fn">StampaClassifica</span>();</pre>
 </div>
 <!-- 17. Classe Path -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">17. Path Class</span><span data-it="">17. Classe Path</span></h3><div class="topic-sub"><span data-en="">Combine, GetFileName, GetExtension</span><span data-it="">Combine, GetFileName, GetExtension, GetDirectoryName, percorsi cross-platform</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Path Class</span><span data-it="">Classe Path</span></h3><div class="topic-sub"><span data-en="">Combine, GetFileName, GetExtension</span><span data-it="">Combine, GetFileName, GetExtension, GetDirectoryName, percorsi cross-platform</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>Cos'e la Classe Path?</h4>
@@ -10841,12 +11118,16 @@ gv.<span class="fn">EliminaVersioniVecchie</span>(<span class="str">"documento.t
 </div>
 </div>
 </div>
+
+
+</div>
 <!-- SECTION AVANZATO (23) -->
 <div class="section" id="section-advanced">
+<div class="section-inner">
 <div class="section-title"><span data-en="">III — Advanced</span><span data-it="">III — Avanzato</span></div>
 <!-- 1. LINQ -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">1. LINQ</span><span data-it="">1. LINQ</span></h3><div class="topic-sub"><span data-en="">Where, Select, OrderBy, GroupBy, First, Count, Sum, Any, All</span><span data-it="">Where, Select, OrderBy, GroupBy, First, Count, Sum, Any, All</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">LINQ</span><span data-it="">LINQ</span></h3><div class="topic-sub"><span data-en="">Where, Select, OrderBy, GroupBy, First, Count, Sum, Any, All</span><span data-it="">Where, Select, OrderBy, GroupBy, First, Count, Sum, Any, All</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
 <p>LINQ (Language Integrated Query) allows you to query collections as if they were databases.</p>
 <pre><span class="kw">using</span> System.Linq;
@@ -10944,9 +11225,9 @@ List&lt;<span class="ty">int</span>&gt; numeri = <span class="kw">new</span>() {
 </div>
 <!-- 2. Generics -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">2. Generics &lt;T&gt;</span><span data-it="">2. Generics &lt;T&gt;</span></h3><div class="topic-sub"><span data-en="">Generic classes/methods, constraints where T:</span><span data-it="">Classi e metodi generici, constraints where T:</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Generics &lt;T&gt;</span><span data-it="">Generics &lt;T&gt;</span></h3><div class="topic-sub"><span data-en="">Generic classes/methods, constraints where T:</span><span data-it="">Classi e metodi generici, constraints where T:</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <pre><span class="cm">// Metodo generico — funziona con qualsiasi tipo:</span>
@@ -10977,11 +11258,16 @@ Scatola&lt;<span class="ty">string</span>&gt; s2 = <span class="kw">new</span>(<
 </div>
 <!-- 3. Delegates & Events -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">3. Delegates &amp; Events</span><span data-it="">3. Delegates &amp; Events</span></h3><div class="topic-sub"><span data-en="">Func, Action, Predicate, delegate, event</span><span data-it="">delegate, Func, Action, Predicate, event</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Functional Patterns</span><span data-it="">Pattern Funzionali</span></h3><div class="topic-sub"><span data-en="">Delegates, Func, Action, events, lambda, closures, => syntax</span><span data-it="">Delegati, Func, Action, eventi, lambda, closure, sintassi =></span></div></div><span class="arrow">&#9660;</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<h4>Delegates &amp; Events</h4>
+<p class="pending-notice">Translation pending…</p>
+
+<h4>Lambda &amp; Closures</h4>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
+<h4>Delegati &amp; Eventi</h4>
 <pre><span class="cm">// Delegate — puntatore a un metodo:</span>
 <span class="kw">delegate</span> <span class="ty">int</span> Operazione(<span class="ty">int</span> a, <span class="ty">int</span> b);
 
@@ -11012,15 +11298,8 @@ Predicate&lt;<span class="ty">int</span>&gt; ePari = n =&gt; n % <span class="nu
 Bottone b = <span class="kw">new</span>();
 b.Click += () =&gt; Console.<span class="fn">WriteLine</span>(<span class="str">"Cliccato!"</span>);
 b.<span class="fn">Premi</span>();</pre>
-</div>
-</div>
-<!-- 4. Lambda & Closures -->
-<div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">4. Lambda &amp; Closures</span><span data-it="">4. Lambda &amp; Closures</span></h3><div class="topic-sub"><span data-en="">=&gt; expressions, body, captured variables</span><span data-it="">Espressioni lambda, variabili catturate, metodi anonimi</span></div></div><span class="arrow">▼</span></div>
-<div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
-</div>
-<div class="it-content topic-body">
+
+<h4>Lambda &amp; Closure</h4>
 <pre><span class="cm">// Sintassi lambda:</span>
 <span class="cm">// (parametri) =&gt; espressione</span>
 <span class="cm">// (parametri) =&gt; { blocco di codice }</span>
@@ -11044,11 +11323,14 @@ moltiplicatore = <span class="num">10</span>;
 Console.<span class="fn">WriteLine</span>(moltiplica(<span class="num">5</span>));  <span class="cm">// 50 ← usa il valore aggiornato!</span></pre>
 </div>
 </div>
+
+<!-- 4. Lambda & Closures -->
+
 <!-- 5. async / await -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">5. async / await</span><span data-it="">5. async / await</span></h3><div class="topic-sub"><span data-en="">Task, async, await, WhenAll, WhenAny</span><span data-it="">Task, async, await, Task.WhenAll, Task.WhenAny</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">async / await</span><span data-it="">async / await</span></h3><div class="topic-sub"><span data-en="">Task, async, await, WhenAll, WhenAny</span><span data-it="">Task, async, await, Task.WhenAll, Task.WhenAny</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <pre><span class="kw">using</span> System.Threading.Tasks;
@@ -11086,9 +11368,9 @@ Task&lt;<span class="ty">string</span>&gt; t2 = <span class="fn">ScaricaDati</sp
 </div>
 <!-- 6. DateTime & TimeSpan -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">6. DateTime &amp; TimeSpan</span><span data-it="">6. DateTime &amp; TimeSpan</span></h3><div class="topic-sub"><span data-en="">Now, Parse, Add, Format, date difference</span><span data-it="">Now, Today, Parse, Format, Add, differenza tra date</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">DateTime &amp; TimeSpan</span><span data-it="">DateTime &amp; TimeSpan</span></h3><div class="topic-sub"><span data-en="">Now, Parse, Add, Format, date difference</span><span data-it="">Now, Today, Parse, Format, Add, differenza tra date</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <pre><span class="cm">// Ottenere la data/ora corrente:</span>
@@ -11129,11 +11411,19 @@ DateTime d = DateTime.<span class="fn">Parse</span>(<span class="str">"25/12/202
 </div>
 <!-- 7. StringBuilder -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">7. StringBuilder</span><span data-it="">7. StringBuilder</span></h3><div class="topic-sub"><span data-en="">Append, Insert, Replace, loop performance</span><span data-it="">Append, Insert, Replace, Remove — performance per stringhe lunghe</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Utility Types</span><span data-it="">Tipi Utility</span></h3><div class="topic-sub"><span data-en="">StringBuilder, Random, Tuple, ValueTuple, named tuples</span><span data-it="">StringBuilder, Random, Tuple, ValueTuple, tuple con nome</span></div></div><span class="arrow">&#9660;</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<h4>StringBuilder</h4>
+<p class="pending-notice">Translation pending…</p>
+
+<h4>Random</h4>
+<p class="pending-notice">Translation pending…</p>
+
+<h4>Tuple &amp; ValueTuple</h4>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
+<h4>StringBuilder</h4>
 <p>Le stringhe normali sono <strong>immutabili</strong> — ogni += crea una nuova stringa. StringBuilder modifica il buffer direttamente, molto più efficiente per molte concatenazioni.</p>
 <pre><span class="kw">using</span> System.Text;
 
@@ -11149,15 +11439,8 @@ Console.<span class="fn">WriteLine</span>(sb.Length); <span class="cm">// lunghe
 <span class="ty">string</span> risultato = sb.<span class="fn">ToString</span>(); <span class="cm">// converte in stringa</span>
 sb.<span class="fn">Clear</span>();                   <span class="cm">// svuota</span></pre>
 <div class="warn">Per meno di ~10 concatenazioni, usa += normale. StringBuilder conviene per loop con molte operazioni.</div>
-</div>
-</div>
-<!-- 8. Random & Utilità -->
-<div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">8. Random &amp; Utilities</span><span data-it="">8. Random &amp; Utilità</span></h3><div class="topic-sub"><span data-en="">Next, NextDouble, shuffle, random element</span><span data-it="">Random, Next, NextDouble, Shuffle, Math completa</span></div></div><span class="arrow">▼</span></div>
-<div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
-</div>
-<div class="it-content topic-body">
+
+<h4>Random</h4>
 <pre><span class="cm">// Random:</span>
 Random rnd = <span class="kw">new</span> Random();
 <span class="ty">int</span>    n1 = rnd.<span class="fn">Next</span>();           <span class="cm">// numero casuale qualsiasi</span>
@@ -11175,15 +11458,8 @@ List&lt;<span class="ty">int</span>&gt; lista = <span class="kw">new</span>() { 
 <span class="cm">// Scegliere elemento casuale:</span>
 <span class="ty">string</span>[] nomi = { <span class="str">"Marco"</span>, <span class="str">"Giulia"</span>, <span class="str">"Luca"</span> };
 <span class="ty">string</span> casuale = nomi[rnd.<span class="fn">Next</span>(nomi.Length)];</pre>
-</div>
-</div>
-<!-- 9. Tuple & ValueTuple -->
-<div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">9. Tuple &amp; ValueTuple</span><span data-it="">9. Tuple &amp; ValueTuple</span></h3><div class="topic-sub"><span data-en="">Multiple return, named tuples, deconstruction</span><span data-it="">Ritorno multiplo, named tuples, decostruzione</span></div></div><span class="arrow">▼</span></div>
-<div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
-</div>
-<div class="it-content topic-body">
+
+<h4>Tuple &amp; ValueTuple</h4>
 <pre><span class="cm">// Tuple — restituire più valori da un metodo:</span>
 <span class="kw">static</span> (int min, int max) <span class="fn">TrovaMinMax</span>(<span class="ty">int</span>[] arr) {
     <span class="kw">return</span> (arr.<span class="fn">Min</span>(), arr.<span class="fn">Max</span>());
@@ -11204,13 +11480,23 @@ Console.<span class="fn">WriteLine</span>(t.Item1);  <span class="cm">// 1</span
 Console.<span class="fn">WriteLine</span>(t.Item2);  <span class="cm">// "ciao"</span></pre>
 </div>
 </div>
+
+<!-- 8. Random & Utilità -->
+
+<!-- 9. Tuple & ValueTuple -->
+
 <!-- 10. Pattern Matching -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">10. Pattern Matching</span><span data-it="">10. Pattern Matching</span></h3><div class="topic-sub"><span data-en="">Advanced switch expression, is, when, range</span><span data-it="">switch expression avanzata, is, when, positional patterns</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Modern C#</span><span data-it="">C# Moderno</span></h3><div class="topic-sub"><span data-en="">Pattern matching, switch expression, record, immutability, with</span><span data-it="">Pattern matching, switch expression, record, immutabilità, with</span></div></div><span class="arrow">&#9660;</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<h4>Pattern Matching</h4>
+<p class="pending-notice">Translation pending…</p>
+
+<h4>Record</h4>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
+<h4>Pattern Matching</h4>
 <pre><span class="cm">// Pattern con is:</span>
 <span class="kw">if</span> (obj <span class="kw">is</span> <span class="ty">int</span> n &amp;&amp; n &gt; <span class="num">0</span>) Console.<span class="fn">WriteLine</span>(<span class="str">$"Intero positivo: {n}"</span>);
 <span class="kw">if</span> (obj <span class="kw">is</span> <span class="ty">string</span> s &amp;&amp; s.Length &gt; <span class="num">5</span>) Console.<span class="fn">WriteLine</span>(<span class="str">$"Stringa lunga: {s}"</span>);
@@ -11234,15 +11520,8 @@ Console.<span class="fn">WriteLine</span>(t.Item2);  <span class="cm">// "ciao"<
     &gt;= <span class="num">60</span>         =&gt; <span class="str">"Sufficiente"</span>,
     _             =&gt; <span class="str">"Insufficiente"</span>
 };</pre>
-</div>
-</div>
-<!-- 11. Record -->
-<div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">11. Record</span><span data-it="">11. Record</span></h3><div class="topic-sub"><span data-en="">Immutability, with expression, value equality</span><span data-it="">Immutabilità, with expression, value equality (C# 9+)</span></div></div><span class="arrow">▼</span></div>
-<div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
-</div>
-<div class="it-content topic-body">
+
+<h4>Record</h4>
 <pre><span class="cm">// Record — tipo immutabile con uguaglianza per valore:</span>
 <span class="kw">record</span> <span class="ty">Persona</span>(<span class="ty">string</span> Nome, <span class="ty">int</span> Eta);
 
@@ -11263,11 +11542,14 @@ Console.<span class="fn">WriteLine</span>(p3);  <span class="cm">// Persona { No
 <div class="note">Record sono ideali per DTO (Data Transfer Objects), modelli di dati, configurazioni — qualsiasi cosa che non deve cambiare dopo la creazione.</div>
 </div>
 </div>
+
+<!-- 11. Record -->
+
 <!-- 12. HashSet, Queue & Stack -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">12. HashSet, Queue &amp; Stack</span><span data-it="">12. HashSet, Queue &amp; Stack</span></h3><div class="topic-sub"><span data-en="">Unique elements, FIFO, LIFO</span><span data-it="">Collezioni specializzate, unicità, FIFO, LIFO</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">HashSet, Queue &amp; Stack</span><span data-it="">HashSet, Queue &amp; Stack</span></h3><div class="topic-sub"><span data-en="">Unique elements, FIFO, LIFO</span><span data-it="">Collezioni specializzate, unicità, FIFO, LIFO</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <h4>HashSet — elementi unici</h4>
@@ -11296,9 +11578,9 @@ pila.<span class="fn">Push</span>(<span class="num">1</span>); pila.<span class=
 </div>
 <!-- 13. Regular Expressions -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">13. Regular Expressions</span><span data-it="">13. Regular Expressions (Regex)</span></h3><div class="topic-sub"><span data-en="">IsMatch, Match, Replace, Groups</span><span data-it="">IsMatch, Match, Replace, Groups</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Regular Expressions</span><span data-it="">13. Regular Expressions (Regex)</span></h3><div class="topic-sub"><span data-en="">IsMatch, Match, Replace, Groups</span><span data-it="">IsMatch, Match, Replace, Groups</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <pre><span class="kw">using</span> System.Text.RegularExpressions;
@@ -11338,11 +11620,16 @@ Console.<span class="fn">WriteLine</span>(data.Groups[<span class="num">3</span>
 </div>
 <!-- 14. Preprocessore & Attributi -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">14. Preprocessor &amp; Attributes</span><span data-it="">14. Preprocessore &amp; Attributi</span></h3><div class="topic-sub"><span data-en="">#region, #if DEBUG, [Obsolete], [Serializable]</span><span data-it="">#region, #if DEBUG, [Obsolete], [Serializable], [Conditional]</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Code Organisation</span><span data-it="">Organizzazione del Codice</span></h3><div class="topic-sub"><span data-en="">#region, #if DEBUG, [Attributes], namespaces, global using</span><span data-it="">#region, #if DEBUG, [Attributi], namespace, global using</span></div></div><span class="arrow">&#9660;</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<h4>Preprocessor &amp; Attributes</h4>
+<p class="pending-notice">Translation pending…</p>
+
+<h4>Namespaces &amp; using</h4>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
+<h4>Preprocessore &amp; Attributi</h4>
 <h4>Direttive del preprocessore</h4>
 <pre><span class="cm">// #region — organizza il codice in blocchi espandibili:</span>
 <span class="kw">#region</span> Metodi di utilità
@@ -11376,13 +11663,59 @@ Console.<span class="fn">WriteLine</span>(<span class="str">"Produzione"</span>)
 <span class="cm">// [JsonPropertyName] — per JSON:</span>
 [System.Text.Json.Serialization.JsonPropertyName(<span class="str">"nome_prodotto"</span>)]
 <span class="kw">public</span> <span class="ty">string</span> Nome { <span class="kw">get</span>; <span class="kw">set</span>; }</pre>
+
+<h4>Namespace &amp; using</h4>
+<pre><span class="cm">// Definire un namespace:</span>
+<span class="kw">namespace</span> MiaApp.Modelli {
+  <span class="kw">class</span> <span class="ty">Utente</span> { <span class="kw">public string</span> Nome { <span class="kw">get</span>; <span class="kw">set</span>; } }
+}
+<span class="kw">namespace</span> MiaApp.Servizi {
+  <span class="kw">class</span> <span class="ty">UtenteService</span> {
+    <span class="cm">// Accesso con nome completo:</span>
+    MiaApp.Modelli.<span class="ty">Utente</span> u = <span class="kw">new</span>();
+  }
+}
+
+<span class="cm">// using — importa namespace:</span>
+<span class="kw">using</span> System.Collections.Generic;
+<span class="kw">using</span> System.Linq;
+<span class="kw">using</span> MiaApp.Modelli;
+
+<span class="cm">// Alias — rinomina per conflitti:</span>
+<span class="kw">using</span> Win = System.Windows;
+<span class="kw">using</span> Web = System.Web;
+Win.<span class="ty">Point</span> p1 = <span class="kw">new</span>();
+Web.<span class="ty">HttpContext</span> ctx = ...;
+
+<span class="cm">// using static — importa membri statici direttamente:</span>
+<span class="kw">using static</span> System.Math;
+<span class="kw">using static</span> System.Console;
+<span class="fn">WriteLine</span>(<span class="fn">Sqrt</span>(<span class="num">16</span>)); <span class="cm">// senza Math. e Console.</span>
+
+<span class="cm">// global using (C# 10+) — vale per tutto il progetto:</span>
+<span class="cm">// In GlobalUsings.cs:</span>
+<span class="kw">global using</span> System;
+<span class="kw">global using</span> System.Collections.Generic;
+<span class="kw">global using</span> System.Linq;
+<span class="cm">// Ora disponibili in tutti i file senza dichiarare!</span>
+
+<span class="cm">// File-scoped namespace (C# 10+) — meno indentazione:</span>
+<span class="kw">namespace</span> MiaApp.Modelli; <span class="cm">// nessuna { }</span>
+<span class="kw">class</span> <span class="ty">Prodotto</span> { } <span class="cm">// automaticamente in MiaApp.Modelli</span>
+<span class="kw">class</span> <span class="ty">Ordine</span> { }   <span class="cm">// stesso namespace</span>
+
+<span class="cm">// namespace annidati — equivalenti:</span>
+<span class="kw">namespace</span> A { <span class="kw">namespace</span> B { <span class="kw">class</span> <span class="ty">C</span> {} } }
+<span class="kw">namespace</span> A.B { <span class="kw">class</span> <span class="ty">C</span> {} } <span class="cm">// identico</span></pre>
+<div class="warn">Best practice: usa file-scoped namespace (C# 10+) e global using per ridurre il boilerplate. Ogni file dovrebbe avere un solo namespace e una sola classe principale.</div>
 </div>
 </div>
+
 <!-- 15. IDisposable & using -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">15. IDisposable &amp; using</span><span data-it="">15. IDisposable &amp; using</span></h3><div class="topic-sub"><span data-en="">Resource management, Dispose pattern, syntactic using</span><span data-it="">Gestione risorse non gestite, pattern Dispose, using sintattico</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">IDisposable &amp; using</span><span data-it="">IDisposable &amp; using</span></h3><div class="topic-sub"><span data-en="">Resource management, Dispose pattern, syntactic using</span><span data-it="">Gestione risorse non gestite, pattern Dispose, using sintattico</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <div class="info">Implementa <b>IDisposable</b> per rilasciare risorse non gestite (file, connessioni DB, socket). Il blocco <code>using</code> chiama <code>Dispose()</code> automaticamente anche in caso di eccezione.</div>
@@ -11422,9 +11755,9 @@ Console.<span class="fn">WriteLine</span>(<span class="str">"Produzione"</span>)
 </div>
 <!-- 16. IEnumerable & yield -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">16. IEnumerable &amp; yield</span><span data-it="">16. IEnumerable&lt;T&gt; &amp; yield</span></h3><div class="topic-sub"><span data-en="">Lazy iterators, yield return, yield break</span><span data-it="">Iteratori personalizzati, lazy evaluation, yield return, yield break</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">IEnumerable &amp; yield</span><span data-it="">IEnumerable &amp; yield</span></h3><div class="topic-sub"><span data-en="">Lazy iterators, yield return, yield break</span><span data-it="">Iteratori personalizzati, lazy evaluation, yield return, yield break</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <div class="info"><code>IEnumerable&lt;T&gt;</code> è l'interfaccia alla base di foreach e LINQ. <code>yield return</code> permette di creare sequenze pigre senza costruire un'intera lista in memoria.</div>
@@ -11461,9 +11794,9 @@ Console.<span class="fn">WriteLine</span>(<span class="str">"Produzione"</span>)
 </div>
 <!-- 17. Extension Methods -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">17. Extension Methods</span><span data-it="">17. Extension Methods</span></h3><div class="topic-sub"><span data-en="">Extension methods, this keyword, static class</span><span data-it="">Metodi estensione, this keyword, static class</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Extension Methods</span><span data-it="">Metodi Estensione</span></h3><div class="topic-sub"><span data-en="">Extension methods, this keyword, static class</span><span data-it="">Metodi estensione, this keyword, static class</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <div class="info">I metodi estensione permettono di aggiungere metodi a qualsiasi tipo — anche sealed o di libreria — senza ereditarietà. Devono stare in una classe <code>static</code> e il primo parametro usa <code>this</code>.</div>
@@ -11503,9 +11836,9 @@ Console.<span class="fn">WriteLine</span>(nomi.<span class="fn">CasualeItem</spa
 </div>
 <!-- 18. Thread, Task & Parallel -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">18. Thread, Task &amp; Parallel</span><span data-it="">18. Thread, Task &amp; Parallelismo</span></h3><div class="topic-sub"><span data-en="">Task.Run, lock, CancellationToken, Interlocked</span><span data-it="">Task.Run, lock, CancellationToken, Parallel, Interlocked</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Thread, Task &amp; Parallel</span><span data-it="">Thread, Task &amp; Parallel</span></h3><div class="topic-sub"><span data-en="">Task.Run, lock, CancellationToken, Interlocked</span><span data-it="">Task.Run, lock, CancellationToken, Parallel, Interlocked</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <div class="info">Per operazioni CPU-intensive usa <code>Task.Run</code>. Per evitare race conditions su dati condivisi usa <code>lock</code>. <code>CancellationToken</code> permette di annullare operazioni in modo cooperativo.</div>
@@ -11554,9 +11887,9 @@ thread.<span class="fn">Join</span>(); <span class="cm">// aspetta</span></pre>
 </div>
 <!-- 19. Collezioni Avanzate -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">19. Advanced Collections</span><span data-it="">19. Collezioni Avanzate</span></h3><div class="topic-sub"><span data-en="">SortedDictionary, ConcurrentDictionary, LinkedList</span><span data-it="">SortedDictionary, ConcurrentDictionary, LinkedList, SortedSet</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Advanced Collections</span><span data-it="">Collezioni Avanzate</span></h3><div class="topic-sub"><span data-en="">SortedDictionary, ConcurrentDictionary, LinkedList</span><span data-it="">SortedDictionary, ConcurrentDictionary, LinkedList, SortedSet</span></div></div><span class="arrow">▼</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
 <pre><span class="cm">// SortedDictionary — chiavi sempre ordinate:</span>
@@ -11598,11 +11931,19 @@ ll.<span class="fn">Remove</span>(nodo);
 </div>
 <!-- 20. Interfacce Fondamentali -->
 <div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">20. Core Interfaces</span><span data-it="">20. Interfacce Fondamentali</span></h3><div class="topic-sub"><span data-en="">IComparable, IEquatable, IComparer</span><span data-it="">IComparable&lt;T&gt;, IEquatable&lt;T&gt;, IComparer&lt;T&gt;, ICloneable</span></div></div><span class="arrow">▼</span></div>
+<div class="topic-header" onclick="toggleCard(this.closest('.topic-card'))"><div class="topic-header-inner"><h3><span data-en="">Type Contracts</span><span data-it="">Contratti di Tipo</span></h3><div class="topic-sub"><span data-en="">IComparable, IEquatable, operator overloading, indexers</span><span data-it="">IComparable, IEquatable, overloading operatori, indicizzatori</span></div></div><span class="arrow">&#9660;</span></div>
 <div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+<h4>IComparable &amp; IEquatable</h4>
+<p class="pending-notice">Translation pending…</p>
+
+<h4>Operator Overloading</h4>
+<p class="pending-notice">Translation pending…</p>
+
+<h4>Indexers</h4>
+<p class="pending-notice">Translation pending…</p>
 </div>
 <div class="it-content topic-body">
+<h4>IComparable &amp; IEquatable</h4>
 <pre><span class="cm">// IComparable&lt;T&gt; — permette ordinamento naturale:</span>
 <span class="kw">class</span> <span class="ty">Studente</span> : IComparable&lt;<span class="ty">Studente</span>&gt; {
   <span class="kw">public string</span> Nome { <span class="kw">get</span>; <span class="kw">set</span>; }
@@ -11638,15 +11979,8 @@ studenti.<span class="fn">Sort</span>(<span class="kw">new</span> <span class="t
 <span class="cm">// Confronto con lambda (più pratico):</span>
 studenti.<span class="fn">Sort</span>((a, b) =&gt; a.Nome.<span class="fn">CompareTo</span>(b.Nome));
 <span class="kw">var</span> ordinati = studenti.<span class="fn">OrderBy</span>(s =&gt; s.Voto).<span class="fn">ThenBy</span>(s =&gt; s.Nome);</pre>
-</div>
-</div>
-<!-- 21. Operator Overloading -->
-<div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">21. Operator Overloading</span><span data-it="">21. Operator Overloading</span></h3><div class="topic-sub"><span data-en="">Overloading +, ==, !=, implicit conversions</span><span data-it="">Sovraccaricare +, -, ==, !=, &gt;, &lt;, conversioni implicite/esplicite</span></div></div><span class="arrow">▼</span></div>
-<div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
-</div>
-<div class="it-content topic-body">
+
+<h4>Overloading degli Operatori</h4>
 <div class="info">In C# puoi ridefinire il comportamento degli operatori per le tue classi/struct. Gli operatori di uguaglianza (==, !=) vanno sempre in coppia, così come (&lt;, &gt;) e (&lt;=, &gt;=).</div>
 <pre><span class="kw">struct</span> <span class="ty">Vettore2D</span> {
   <span class="kw">public double</span> X, Y;
@@ -11685,15 +12019,8 @@ studenti.<span class="fn">Sort</span>((a, b) =&gt; a.Nome.<span class="fn">Compa
 <span class="kw">bool</span> uguale = v1 == v2;           <span class="cm">// false</span>
 <span class="ty">Vettore2D</span> v4 = (<span class="num">5.0</span>, <span class="num">6.0</span>);      <span class="cm">// conversione implicita da tuple</span>
 Console.<span class="fn">WriteLine</span>(v3);            <span class="cm">// (4, 6)</span></pre>
-</div>
-</div>
-<!-- 22. Indexers & Proprietà Avanzate -->
-<div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">22. Indexers &amp; Advanced Properties</span><span data-it="">22. Indexers &amp; Proprietà Avanzate</span></h3><div class="topic-sub"><span data-en="">Indexers, init-only, required, backing field</span><span data-it="">Indicizzatori, init-only, required, backing field</span></div></div><span class="arrow">▼</span></div>
-<div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
-</div>
-<div class="it-content topic-body">
+
+<h4>Indicizzatori</h4>
 <pre><span class="cm">// Indexer — accesso con [] sulla tua classe:</span>
 <span class="kw">class</span> <span class="ty">Rubrica</span> {
   <span class="kw">private</span> <span class="ty">Dictionary</span>&lt;<span class="ty">string</span>, <span class="ty">string</span>&gt; _dati = <span class="kw">new</span>();
@@ -11739,93 +12066,123 @@ Console.<span class="fn">WriteLine</span>(r[<span class="str">"Marco"</span>]); 
 }</pre>
 </div>
 </div>
+
+<!-- 21. Operator Overloading -->
+
+<!-- 22. Indexers & Proprietà Avanzate -->
+
 <!-- 23. Namespaces & using -->
-<div class="topic-card">
-<div class="topic-header" onclick="toggle(this.closest('.topic-card'))"><div><h3><span data-en="">23. Namespaces &amp; using</span><span data-it="">23. Namespaces &amp; using Direttive</span></h3><div class="topic-sub"><span data-en="">namespace, global using, file-scoped, alias</span><span data-it="">namespace, using, global using, alias, file-scoped</span></div></div><span class="arrow">▼</span></div>
-<div class="en-placeholder topic-body">
-<p style="color:#444;font-size:.8rem;font-style:italic;margin:.5rem 0;">[Note] English translation not yet added.</p>
+
 </div>
-<div class="it-content topic-body">
-<pre><span class="cm">// Definire un namespace:</span>
-<span class="kw">namespace</span> MiaApp.Modelli {
-  <span class="kw">class</span> <span class="ty">Utente</span> { <span class="kw">public string</span> Nome { <span class="kw">get</span>; <span class="kw">set</span>; } }
-}
-<span class="kw">namespace</span> MiaApp.Servizi {
-  <span class="kw">class</span> <span class="ty">UtenteService</span> {
-    <span class="cm">// Accesso con nome completo:</span>
-    MiaApp.Modelli.<span class="ty">Utente</span> u = <span class="kw">new</span>();
-  }
-}
 
-<span class="cm">// using — importa namespace:</span>
-<span class="kw">using</span> System.Collections.Generic;
-<span class="kw">using</span> System.Linq;
-<span class="kw">using</span> MiaApp.Modelli;
 
-<span class="cm">// Alias — rinomina per conflitti:</span>
-<span class="kw">using</span> Win = System.Windows;
-<span class="kw">using</span> Web = System.Web;
-Win.<span class="ty">Point</span> p1 = <span class="kw">new</span>();
-Web.<span class="ty">HttpContext</span> ctx = ...;
-
-<span class="cm">// using static — importa membri statici direttamente:</span>
-<span class="kw">using static</span> System.Math;
-<span class="kw">using static</span> System.Console;
-<span class="fn">WriteLine</span>(<span class="fn">Sqrt</span>(<span class="num">16</span>)); <span class="cm">// senza Math. e Console.</span>
-
-<span class="cm">// global using (C# 10+) — vale per tutto il progetto:</span>
-<span class="cm">// In GlobalUsings.cs:</span>
-<span class="kw">global using</span> System;
-<span class="kw">global using</span> System.Collections.Generic;
-<span class="kw">global using</span> System.Linq;
-<span class="cm">// Ora disponibili in tutti i file senza dichiarare!</span>
-
-<span class="cm">// File-scoped namespace (C# 10+) — meno indentazione:</span>
-<span class="kw">namespace</span> MiaApp.Modelli; <span class="cm">// nessuna { }</span>
-<span class="kw">class</span> <span class="ty">Prodotto</span> { } <span class="cm">// automaticamente in MiaApp.Modelli</span>
-<span class="kw">class</span> <span class="ty">Ordine</span> { }   <span class="cm">// stesso namespace</span>
-
-<span class="cm">// namespace annidati — equivalenti:</span>
-<span class="kw">namespace</span> A { <span class="kw">namespace</span> B { <span class="kw">class</span> <span class="ty">C</span> {} } }
-<span class="kw">namespace</span> A.B { <span class="kw">class</span> <span class="ty">C</span> {} } <span class="cm">// identico</span></pre>
-<div class="warn">Best practice: usa file-scoped namespace (C# 10+) e global using per ridurre il boilerplate. Ogni file dovrebbe avere un solo namespace e una sola classe principale.</div>
-</div>
-</div>
 </div>
 </main>
 </div>
+</div><!-- /view-host -->
 <script>
+// ── State ──────────────────────────────────────────────────────────────
 const MODS = ['fundamentals','intermediate','advanced'];
-let currentMod = 'fundamentals';
+const MOD_SIZES = { fundamentals:14, intermediate:17, advanced:16 };
+let currentMod  = null;
 let currentCard = -1;
 let currentLang = 'en';
+let isDark      = true;
+
+// ── Theme ──────────────────────────────────────────────────────────────
+function applyTheme(dark) {
+  isDark = dark;
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  const icon = document.querySelector('.theme-icon');
+  if (icon) icon.textContent = dark ? '🌙' : '☀️';
+  try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch(e){}
+}
+function toggleTheme() { applyTheme(!isDark); }
+
+// ── Language ───────────────────────────────────────────────────────────
 function setLang(lang) {
   currentLang = lang;
   document.body.className = 'lang-' + lang;
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
   document.getElementById('btn-it').classList.toggle('active', lang === 'it');
-  document.getElementById('searchInput').placeholder = lang === 'en' ? 'Search…' : 'Cerca…';
+  document.getElementById('searchInput').placeholder = lang === 'en' ? 'Search\u2026' : 'Cerca\u2026';
   _index = null;
+  clearSearch();
 }
 
+// ── View transitions ───────────────────────────────────────────────────
+let _transitioning = false;
+function switchView(showId, hideId) {
+  if (_transitioning) return;
+  const show = document.getElementById(showId);
+  const hide = document.getElementById(hideId);
+  if (!show || !hide || show === hide) return;
+  if (show.classList.contains('active')) return;
+
+  _transitioning = true;
+  hide.classList.add('exit');
+  hide.classList.remove('active');
+
+  setTimeout(() => {
+    hide.classList.remove('exit');
+    show.scrollTop = 0;
+    show.classList.add('active');
+    setTimeout(() => { _transitioning = false; }, 250);
+  }, 160);
+}
+
+// ── Homepage ───────────────────────────────────────────────────────────
+function goHome() {
+  switchView('section-home', 'view-reference');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  currentMod  = null;
+  currentCard = -1;
+  document.getElementById('progressFill').style.width = '0%';
+}
+
+// ── Module switching ───────────────────────────────────────────────────
 function showMod(modId, btn) {
+  const wasOnHome = !document.getElementById('view-reference').classList.contains('active');
+  if (wasOnHome) switchView('view-reference', 'section-home');
+
   currentMod = modId;
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById('section-' + modId).classList.add('active');
+
   if (btn) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
-  document.querySelectorAll('.tree-mod').forEach(m => {
-    if (m.dataset.mod === modId) {
-      m.classList.add('open');
-    } else {
-      m.classList.remove('open');
-    }
-  });
-  markTreeItem(-1);
+
+  const section = document.getElementById('section-' + modId);
+  section.querySelectorAll('.topic-card.open').forEach(c => c.classList.remove('open'));
+  currentCard = -1;
+  const contentEl = document.querySelector('.content');
+  if (contentEl) contentEl.scrollTop = 0;
+  updateProgress();
 }
 
+// ── Topic toggle ───────────────────────────────────────────────────────
+function toggleCard(card) {
+  const isOpen = card.classList.contains('open');
+  const section = card.closest('.section');
+  section.querySelectorAll('.topic-card.open').forEach(c => {
+    if (c !== card) c.classList.remove('open');
+  });
+  card.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    const cards = Array.from(section.querySelectorAll('.topic-card'));
+    currentCard = cards.indexOf(card);
+    initCopyButtons();
+    setTimeout(() => card.scrollIntoView({ behavior:'smooth', block:'nearest' }), 50);
+  } else {
+    currentCard = -1;
+  }
+  updateProgress();
+}
+function toggle(card) { toggleCard(card); }
+
+// ── Show specific topic ────────────────────────────────────────────────
 function showTopic(modId, idx) {
   if (modId !== currentMod) {
     const btn = document.querySelector(`.nav-btn[data-mod="${modId}"]`);
@@ -11833,51 +12190,70 @@ function showTopic(modId, idx) {
   }
   currentCard = idx;
   const cards = document.querySelectorAll(`#section-${modId} .topic-card`);
-  cards.forEach((c, i) => {
-    if (i === idx) c.classList.add('open');
-    else c.classList.remove('open');
-  });
+  cards.forEach((c, i) => c.classList.toggle('open', i === idx));
   if (cards[idx]) {
-    setTimeout(() => cards[idx].scrollIntoView({behavior:'smooth', block:'start'}), 60);
+    initCopyButtons();
+    setTimeout(() => cards[idx].scrollIntoView({ behavior:'smooth', block:'start' }), 80);
   }
-  markTreeItem(idx);
   closeResults();
+  updateProgress();
 }
 
-function markTreeItem(idx) {
-  document.querySelectorAll('.tree-item').forEach(el => el.classList.remove('active'));
-  if (idx < 0) return;
-  const grp = document.querySelector(`.tree-mod[data-mod="${currentMod}"]`);
-  if (grp) {
-    const children = grp.nextElementSibling?.querySelectorAll('.tree-item');
-    if (children && children[idx]) children[idx].classList.add('active');
-  }
+
+// ── Progress ───────────────────────────────────────────────────────────
+function updateProgress() {
+  const fill = document.getElementById('progressFill');
+  if (!fill) return;
+  fill.style.width = (!currentMod || currentCard < 0)
+    ? '0%' : ((currentCard + 1) / MOD_SIZES[currentMod] * 100) + '%';
 }
 
-function treeToggle(el) {
-  const modId = el.dataset.mod;
-  const isOpen = el.classList.contains('open');
-  if (!isOpen) {
-    const btn = document.querySelector(`.nav-btn[data-mod="${modId}"]`);
-    showMod(modId, btn);
-  } else {
-    el.classList.remove('open');
-  }
+// ── Copy buttons ───────────────────────────────────────────────────────
+function initCopyButtons() {
+  document.querySelectorAll('pre').forEach(pre => {
+    if (pre.parentElement?.classList.contains('pre-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'pre-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'copy';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const text = pre.innerText || pre.textContent;
+      const done = () => {
+        btn.textContent = 'copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+      };
+      navigator.clipboard ? navigator.clipboard.writeText(text).then(done).catch(() => { fbCopy(text); done(); }) : (fbCopy(text), done());
+    });
+    wrap.appendChild(btn);
+  });
+}
+function fbCopy(t) {
+  const a = Object.assign(document.createElement('textarea'), { value:t, style:'position:fixed;opacity:0' });
+  document.body.appendChild(a); a.select(); document.execCommand('copy'); document.body.removeChild(a);
 }
 
-function toggle(card) { card.classList.toggle('open'); }
+// ── Sticky headers ─────────────────────────────────────────────────────
+function initStickyHeaders() {
+  document.querySelectorAll('.topic-card').forEach(card => {
+    if (card.querySelector('.topic-sticky')) return;
+    const h3 = card.querySelector('h3');
+    if (!h3) return;
+    const sticky = document.createElement('div');
+    sticky.className = 'topic-sticky';
+    sticky.innerHTML = h3.innerHTML;
+    card.querySelector('.topic-header').insertAdjacentElement('afterend', sticky);
+  });
+}
 
-(function() {
-  const firstMod = document.querySelector('.tree-mod[data-mod="fundamentals"]');
-  if (firstMod) firstMod.classList.add('open');
-  document.getElementById('section-fundamentals').classList.add('active');
-})();
 
-// Search (aggiornato con i nuovi moduli)
+// ── Search ─────────────────────────────────────────────────────────────
 const MODULE_LABELS = {
-  fundamentals:'I — Fondamenti',
-  intermediate:'II — Intermedio',
-  advanced:'III — Avanzato'
+  en: { fundamentals:'I \u2014 Fundamentals', intermediate:'II \u2014 Intermediate', advanced:'III \u2014 Advanced' },
+  it: { fundamentals:'I \u2014 Fondamenti',   intermediate:'II \u2014 Intermedio',   advanced:'III \u2014 Avanzato'  }
 };
 let _index = null;
 function getIndex() {
@@ -11885,20 +12261,23 @@ function getIndex() {
   _index = [];
   MODS.forEach(modId => {
     document.querySelectorAll('#section-' + modId + ' .topic-card').forEach((card, idx) => {
-      const title = card.querySelector('h3')?.textContent || '';
-      const sub   = card.querySelector('.topic-sub')?.textContent || '';
-      const body  = card.querySelector('.topic-body')?.textContent || '';
+      const h3 = card.querySelector('h3');
+      const titleEl = h3?.querySelector(currentLang === 'en' ? '[data-en]' : '[data-it]');
+      const title = titleEl?.textContent || h3?.textContent || '';
+      const subWrap = card.querySelector('.topic-sub');
+      const subEl = subWrap?.querySelector(currentLang === 'en' ? '[data-en]' : '[data-it]');
+      const sub = subEl?.textContent || subWrap?.textContent || '';
+      const bodyEl = card.querySelector(currentLang === 'en' ? '.en-placeholder' : '.it-content');
+      const body = bodyEl?.textContent || '';
       _index.push({ modId, idx, title, sub,
         text: (title+' '+sub+' '+body).toLowerCase(),
-        bodySnippet: body.trim().slice(0,200) });
+        bodySnippet: body.trim().slice(0, 200) });
     });
   });
   return _index;
 }
 function esc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
-function highlight(s, q) {
-  return s.replace(new RegExp('('+esc(q)+')','gi'),'<span class="sr-highlight">$1</span>');
-}
+function highlight(s, q) { return s.replace(new RegExp('('+esc(q)+')','gi'),'<span class="sr-highlight">$1</span>'); }
 function onSearch() {
   const q = document.getElementById('searchInput').value.trim();
   const clearBtn = document.getElementById('searchClear');
@@ -11907,43 +12286,83 @@ function onSearch() {
   if (hint) hint.style.display = q ? 'none' : '';
   if (!q) { closeResults(); return; }
   openResults();
-  const results = getIndex().filter(r => r.text.includes(q.toLowerCase())).slice(0,18);
+  const results = getIndex().filter(r => r.text.includes(q.toLowerCase())).slice(0, 18);
   const box = document.getElementById('searchResults');
   if (!results.length) {
-    box.innerHTML = '<div class="sr-empty">Nessun risultato per "<b>'+q+'</b>"</div>';
+    const msg = currentLang === 'en' ? 'No results for' : 'Nessun risultato per';
+    box.innerHTML = `<div class="sr-empty">${msg} "<b>${q}</b>"</div>`;
     return;
   }
   box.innerHTML = results.map(r => {
-    const bl = r.bodySnippet.toLowerCase();
-    const pos = bl.indexOf(q.toLowerCase());
-    let snippet = pos !== -1
-      ? (pos>20?'\u2026':'')+r.bodySnippet.slice(Math.max(0,pos-20), Math.min(r.bodySnippet.length,pos+q.length+50))+'\u2026'
+    const pos = r.bodySnippet.toLowerCase().indexOf(q.toLowerCase());
+    const snippet = pos !== -1
+      ? (pos>20?'\u2026':'')+r.bodySnippet.slice(Math.max(0,pos-20),pos+q.length+50)+'\u2026'
       : r.bodySnippet.slice(0,80)+'\u2026';
-    return '<div class="sr-item" onclick="showTopic(\'' + r.modId + '\',' + r.idx + ')">'
-      + '<div class="sr-mod">' + MODULE_LABELS[r.modId] + '</div>'
-      + '<div class="sr-title">' + highlight(r.title, q) + '</div>'
-      + '<div class="sr-sub">' + highlight(snippet, q) + '</div>'
-      + '</div>';
+    return `<div class="sr-item" onclick="showTopic('${r.modId}',${r.idx})">
+      <div class="sr-mod">${MODULE_LABELS[currentLang][r.modId]}</div>
+      <div class="sr-title">${highlight(r.title, q)}</div>
+      <div class="sr-sub">${highlight(snippet, q)}</div>
+    </div>`;
   }).join('');
 }
-function openResults() { if (document.getElementById('searchInput').value.trim()) document.getElementById('searchResults').classList.add('open'); }
+function openResults()  {
+  if (document.getElementById('searchInput').value.trim())
+    document.getElementById('searchResults').classList.add('open');
+}
 function closeResults() { document.getElementById('searchResults').classList.remove('open'); }
-function clearSearch() {
+function clearSearch()  {
   document.getElementById('searchInput').value = '';
   document.getElementById('searchClear').style.display = 'none';
   const hint = document.getElementById('searchHint');
   if (hint) hint.style.display = '';
   closeResults();
 }
-document.addEventListener('click', e => {
-  if (!document.getElementById('searchWrap').contains(e.target)) closeResults();
-});
+
+// ── Keyboard shortcuts ─────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   const inp = document.getElementById('searchInput');
-  if (e.key === '/' && document.activeElement !== inp) {
-    e.preventDefault(); inp.focus();
+  const active = document.activeElement;
+  if (e.key === '/' && active !== inp && active.tagName !== 'INPUT') { e.preventDefault(); inp.focus(); return; }
+  if (e.key === 'Escape') { clearSearch(); inp.blur(); return; }
+});
+
+// ── Init ───────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Theme
+  try {
+    const saved = localStorage.getItem('theme');
+    applyTheme(saved !== 'light');
+  } catch(e) { applyTheme(true); }
+
+  // Close search on outside click
+  document.addEventListener('click', e => {
+    if (!document.getElementById('searchWrap').contains(e.target)) closeResults();
+  });
+
+  // Start on homepage
+  document.getElementById('section-home').classList.add('active');
+
+  // Enhancements
+  initStickyHeaders();
+
+  // Scroll progress (on the reference view's .content)
+  const contentEl = document.querySelector('.content');
+  if (contentEl) {
+    contentEl.addEventListener('scroll', () => {
+      if (currentCard < 0 || !currentMod) return;
+      const openCard = contentEl.querySelector('.topic-card.open');
+      if (!openCard) return;
+      const body = openCard.querySelector('.topic-body');
+      if (!body) return;
+      const rect = body.getBoundingClientRect();
+      const cRect = contentEl.getBoundingClientRect();
+      const scrolled = Math.max(0, cRect.top - rect.top);
+      const total = Math.max(1, rect.height - cRect.height);
+      const base = currentCard / MOD_SIZES[currentMod];
+      const fill = document.getElementById('progressFill');
+      if (fill) fill.style.width = ((base + Math.min(1, scrolled/total) / MOD_SIZES[currentMod]) * 100) + '%';
+    });
   }
-  if (e.key === 'Escape') { clearSearch(); inp.blur(); }
 });
 </script>
 </body>
